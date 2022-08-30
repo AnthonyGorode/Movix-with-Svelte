@@ -1,7 +1,9 @@
 <script lang="ts">
-    import Spinner from "../components/Spinner.svelte";
     import { onMount } from "svelte";
-
+	import { fly, scale } from 'svelte/transition';
+	import { flip } from 'svelte/animate';
+    
+    import Spinner from "../components/Spinner.svelte";
     import Movie from "../components/Movie.svelte";
     import MovieDescription from "../components/MovieDescription.svelte";
 
@@ -20,9 +22,9 @@
 
     onMount(async() => {
 		datas = await fetchMovies();
-        if(datas) firstMovie = datas.trending[0];
 
         setTimeout(() => timeDiscover = true, 1000);
+        setTimeout(() => firstMovie = datas.trending[0], 2000);
         setTimeout(() => timeMarvel = true, 4000);
         setTimeout(() => timeTrending = true, 7000);
         console.log(datas);
@@ -49,10 +51,12 @@
     {/if}
 
     <h1 class="title_block" style="margin-top: 20px;"> Les films à découvrir </h1>
-    <div id="discover">
+    <div id="discover" out:scale={{delay: 200}}>
     {#if datas && timeDiscover}
-        {#each datas.discover as {poster_path, id}}    
-            <Movie poster_path={poster_path} id={id} />
+        {#each datas.discover as {poster_path, id}, index ({poster_path, id})}
+            <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>
+                <Movie poster_path={poster_path} id={id} />
+            </div>    
         {/each}
 
     {:else}
@@ -71,10 +75,12 @@
     <hr>
 
     <h1 class="title_block">Best films Marvel</h1>
-    <div id="marvel">
+    <div id="marvel" out:scale={{delay: 200}}>
     {#if datas && timeMarvel}    
-        {#each datas.marvel as {poster_path, id}}    
-            <Movie poster_path={poster_path} id={id} />
+        {#each datas.marvel as {poster_path, id}, index ({poster_path, id})}
+            <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>   
+                <Movie poster_path={poster_path} id={id} />
+            </div>
         {/each}
 
     {:else}
@@ -92,23 +98,13 @@
 
     <hr>
 
-    <!-- <h1>Les meilleurs films DC</h1>
-    <div id="dc">
-    {#if datas}    
-        {#each datas.dc as {poster_path, id}}    
-            <Movie poster_path={poster_path} id={id} />
-        {/each}
-
-    {:else}
-        <p>Loading . . .</p>
-    {/if}
-    </div> -->
-
     <h1 class="title_block">Tendances</h1>
-    <div id="trending">
+    <div id="trending" out:scale={{delay: 200}}>
     {#if datas && timeTrending}    
-        {#each datas.trending as {poster_path, id}}    
-            <Movie poster_path={poster_path} id={id} />
+        {#each datas.trending as {poster_path, id}, index ({poster_path, id})}
+            <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>   
+                <Movie poster_path={poster_path} id={id} />
+            </div>
         {/each}
 
     {:else}
@@ -134,6 +130,18 @@
         />
     </div>
 {/if}
+
+<!-- <h1>Les meilleurs films DC</h1>
+<div id="dc">
+    {#if datas}    
+        {#each datas.dc as {poster_path, id}}    
+            <Movie poster_path={poster_path} id={id} />
+        {/each}
+
+    {:else}
+        <p>Loading . . .</p>
+    {/if}
+</div> -->
 
 <!-- <h1>Science Fiction du moment</h1>
 <div id="scifi">

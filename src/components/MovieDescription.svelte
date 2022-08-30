@@ -1,6 +1,7 @@
 <script>
     import { Link } from "svelte-routing";
     import { scale } from "svelte/transition";
+	import { slide } from 'svelte/transition';
 
     export let movie;
 </script>
@@ -8,7 +9,8 @@
 <div 
     id="block-film-first" 
     style="background-image:url(https://image.tmdb.org/t/p/original{movie.backdrop_path});"
-    transition:scale={{delay: 200}}
+    in:slide
+    out:scale={{delay: 200}}
 >
     <div style="display: flex;justify-content: center;color: white;width: 100vh; height: 100%;align-items: center;">
         <div id="block-details">

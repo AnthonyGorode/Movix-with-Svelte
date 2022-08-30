@@ -2,6 +2,7 @@
     import { onMount } from "svelte";   
     import { navigate } from "svelte-routing";
     import { scale, fade } from "svelte/transition";
+	import { slide } from 'svelte/transition';
 
     import Spinner from "../components/Spinner.svelte";
 
@@ -131,7 +132,8 @@
                 background: linear-gradient(rgba(27.45%, 22.75%, 19.22%, 0.88), rgba(27.45%, 22.75%, 19.22%, 0.88), rgba(27.45%, 22.75%, 19.22%, 0.88)), url(https://image.tmdb.org/t/p/original{datas.details.backdrop_path}) no-repeat;
                 background-size: cover;
                 background-position: 100% 20%;"
-            transition:scale={{delay: 200}}   
+                in:slide
+                out:scale={{delay: 200}}  
         >
             <div style="display: flex;justify-content: center;width: 70%;color: white;margin-top:2%;">
                 <div id="block-image">
@@ -190,7 +192,7 @@
         </div>
     {/if}
 
-    <div class="movie_details">
+    <div class="movie_details" out:scale={{delay: 200}}>
         <h1>Casting</h1>
         <div id="actors">
             {#if datas.actors && timeActors}   

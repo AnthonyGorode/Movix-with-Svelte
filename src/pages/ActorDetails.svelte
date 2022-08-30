@@ -11,7 +11,7 @@
         getMoviesActor
     } from "../services/movieDb";
 
-    export let id;
+    export let id: number;
     let actorDatas;
 
     onMount(async() => {
@@ -84,7 +84,6 @@
 
         overflow-x: scroll;
         background-color: rgba(27.45%, 22.75%, 19.22%, 0.88);
-        /* border: 1px solid rgba(0,0,0,.125); */
         border-radius: 20px;
         box-shadow: 10px 5px 5px grey;
         padding: 10px;

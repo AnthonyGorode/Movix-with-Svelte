@@ -6,7 +6,7 @@
     export let borderRadiusSpin: number;
 </script>
 
-<div 
+<div
     id="spinner" 
     style="
         border: {borderSpin}px solid lightgrey;
@@ -19,11 +19,6 @@
 
 <style>
 #spinner {
-    /* border: 10px solid lightgrey;
-    border-top: 10px solid #212529;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%; */
     animation: spin 1s linear infinite;
 }
 

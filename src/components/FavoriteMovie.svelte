@@ -8,19 +8,6 @@
 
     export let displayMovie;
     export let removeMovie;
-
-    // const reloadImage = (pThis, poster_path) => {
-    //     // To prevent this from being executed over and over
-    //     pThis.onerror = null; 
-        
-    //     // Refresh the src attribute, which should make the
-    //     // browsers reload the iamge.
-    //     pThis.src = poster_path;
-        
-    //     console.log(pThis);
-
-    //     return pThis;
-    // }
 </script>
 
 <div class="block_image">

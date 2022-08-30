@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Link } from "svelte-routing";
+	import { slide } from 'svelte/transition';
 
     export let poster_path: string;
     export let id: number;
@@ -46,6 +47,7 @@
             src="https://image.tmdb.org/t/p/w500{poster_path}" 
             alt="poster film"
             loading="lazy"
+            in:slide
         >  
     </Link>
 </div>
