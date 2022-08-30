@@ -159,11 +159,7 @@
     {/if}
 </div> -->
 
-<style>
-    .title_block {      
-        padding-left: 20px;
-    }
-    
+<style>  
     #discover, #marvel, #trending {
         display: flex;
 

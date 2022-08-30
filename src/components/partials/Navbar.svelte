@@ -30,7 +30,7 @@
         </NavItem>
         <NavItem>
             <NavLink>
-                <Link to="/movie-details/1" class="page">Movie</Link>
+                <Link to="/favorites" class="page">Favoris</Link>
             </NavLink>
         </NavItem>
       </Nav>

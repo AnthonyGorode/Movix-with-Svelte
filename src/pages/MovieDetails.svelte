@@ -1,13 +1,10 @@
 <script lang="ts">
-    import Spinner from "../components/Spinner.svelte";
-
-    import { onMount } from "svelte";
-    
+    import { onMount } from "svelte";   
     import { navigate } from "svelte-routing";
-
     import { scale, fade } from "svelte/transition";
 
-    export let id;
+    import Spinner from "../components/Spinner.svelte";
+
 
     import {
         getMovieDetails,
@@ -22,7 +19,10 @@
         getMovieById,
         deleteMovie
     } from "../services/movieRepo";
-    import type { MovieModel } from "../models/movie.model";
+
+    import type MovieModel from "../models/movie.model";
+
+    export let id;
 
     let datas;
     let timeActors: boolean = false, 
@@ -103,7 +103,7 @@
             id, title, original_title, overview, tagline, poster_path, backdrop_path, release_date, budget, revenue, popularity, vote_average, vote_count
         } = datas.details;
 
-        const movie: MovieModel = { movie_id: id, title, original_title, overview, tagline, poster_path, backdrop_path, release_date, budget, revenue, popularity, vote_average, vote_count };
+        const movie: MovieModel = { id, title, original_title, overview, tagline, poster_path, backdrop_path, release_date, budget, revenue, popularity, vote_average, vote_count };
         
         try {
            documentId = await addMovie(movie);
@@ -130,8 +130,9 @@
             style="
                 background: linear-gradient(rgba(27.45%, 22.75%, 19.22%, 0.88), rgba(27.45%, 22.75%, 19.22%, 0.88), rgba(27.45%, 22.75%, 19.22%, 0.88)), url(https://image.tmdb.org/t/p/original{datas.details.backdrop_path}) no-repeat;
                 background-size: cover;
-                background-position: 100% 20%;
-            ">
+                background-position: 100% 20%;"
+            transition:scale={{delay: 200}}   
+        >
             <div style="display: flex;justify-content: center;width: 70%;color: white;margin-top:2%;">
                 <div id="block-image">
                     <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster film">

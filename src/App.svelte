@@ -1,24 +1,27 @@
 <script>
   import { Router, Route } from "svelte-routing";
-  // @ts-ignore
-import Home from "./pages/Home.svelte";
+  
   import Navbar from "./components/partials/Navbar.svelte";
+  import Home from "./pages/Home.svelte";
   import MovieDetails from "./pages/MovieDetails.svelte";
-import ActorDetails from "./pages/ActorDetails.svelte";
+  import ActorDetails from "./pages/ActorDetails.svelte";
+  import Favorite from "./pages/Favorite.svelte";
+
   export let url = ""; //This property is necessary declare to avoid ignore the Router
 </script>
 
 <Router url="{url}">
   <Navbar />
    <div>   
-    <Route path="/"><Home /></Route>
-    <Route path="/home"><Home /></Route>
+    <Route path="/"> <Home /> </Route>
+    <Route path="home"> <Home /> </Route>
      <Route path="movie-details/:id" component="{MovieDetails}" let:params>
         <MovieDetails id={params.id} />
     </Route>
     <Route path="actor-details/:id" component="{ActorDetails}" let:params>
         <ActorDetails id={params.id} />
-    </Route> 
+    </Route>
+    <Route path="favorites"> <Favorite /> </Route>
     
      <!--for now the router just support case sensitive,
          one workaround colud be add two time the route

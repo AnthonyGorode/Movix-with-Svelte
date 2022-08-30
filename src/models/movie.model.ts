@@ -1,5 +1,5 @@
-export interface MovieModel {
-    movie_id: number,
+export default interface MovieModel {
+    id: number,
     title?: string,
     original_title?: string
     overview?:  string,
