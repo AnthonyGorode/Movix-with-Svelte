@@ -22,9 +22,10 @@
 
     onMount(async() => {
 		datas = await fetchMovies();
+        // const test = datas.discover.sort((a,b) => b.vote_average - a.vote_average);
 
         setTimeout(() => timeDiscover = true, 1000);
-        setTimeout(() => firstMovie = datas.trending[0], 2000);
+        setTimeout(() => firstMovie = datas.discover[0], 2000);
         setTimeout(() => timeMarvel = true, 4000);
         setTimeout(() => timeTrending = true, 7000);
         console.log(datas);
@@ -50,12 +51,12 @@
         <MovieDescription movie={firstMovie} />
     {/if}
 
-    <h1 class="title_block" style="margin-top: 20px;"> Les films à découvrir </h1>
+    <h2 class="title_block" style="margin-top: 20px;"> Les films à découvrir </h2>
     <div id="discover" out:scale={{delay: 200}}>
     {#if datas && timeDiscover}
-        {#each datas.discover as {poster_path, id}, index ({poster_path, id})}
+        {#each datas.discover as {poster_path, id, title}, index ({poster_path, id, title})}
             <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>
-                <Movie poster_path={poster_path} id={id} />
+                <Movie poster_path={poster_path} id={id} title={title} />
             </div>    
         {/each}
 
@@ -74,12 +75,12 @@
 
     <hr>
 
-    <h1 class="title_block">Best films Marvel</h1>
+    <h2 class="title_block">Best films Marvel</h2>
     <div id="marvel" out:scale={{delay: 200}}>
     {#if datas && timeMarvel}    
-        {#each datas.marvel as {poster_path, id}, index ({poster_path, id})}
+        {#each datas.marvel as {poster_path, id, title}, index ({poster_path, id, title})}
             <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>   
-                <Movie poster_path={poster_path} id={id} />
+                <Movie poster_path={poster_path} id={id} title={title} />
             </div>
         {/each}
 
@@ -98,12 +99,12 @@
 
     <hr>
 
-    <h1 class="title_block">Tendances</h1>
+    <h2 class="title_block">Tendances</h2>
     <div id="trending" out:scale={{delay: 200}}>
     {#if datas && timeTrending}    
-        {#each datas.trending as {poster_path, id}, index ({poster_path, id})}
+        {#each datas.trending as {poster_path, id, title}, index ({poster_path, id, title})}
             <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>   
-                <Movie poster_path={poster_path} id={id} />
+                <Movie poster_path={poster_path} id={id} title={title} />
             </div>
         {/each}
 
@@ -131,7 +132,7 @@
     </div>
 {/if}
 
-<!-- <h1>Les meilleurs films DC</h1>
+<!-- <h2>Les meilleurs films DC</h2>
 <div id="dc">
     {#if datas}    
         {#each datas.dc as {poster_path, id}}    
@@ -143,7 +144,7 @@
     {/if}
 </div> -->
 
-<!-- <h1>Science Fiction du moment</h1>
+<!-- <h2>Science Fiction du moment</h2>
 <div id="scifi">
     {#if datas}    
         {#each datas.scifi as {poster_path, id}}    
@@ -155,7 +156,7 @@
     {/if}
 </div> -->
 
-<!-- <h1>Best Dramas</h1>
+<!-- <h2>Best Dramas</h2>
 <div id="dramas">
     {#if datas}    
         {#each datas.drama as {poster_path, id}}    

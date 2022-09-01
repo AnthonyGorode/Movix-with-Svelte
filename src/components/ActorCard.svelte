@@ -1,9 +1,38 @@
 <script>
+	import { fly, scale } from 'svelte/transition';
+
+    import Spinner from "../components/Spinner.svelte";
+    import FavoriteButton from "../components/FavoriteButton.svelte";
+
+    import { handleErrorActorImg } from "../services/utils/handleError";
+
     export let actorDetails;
+    export let isGetDocumentId;
+    export let paramsFavoriteBtn;
 </script>
-<div id="actor-details">
+<div id="actor-details" in:fly="{{ y: 100, duration: 1000 }}" out:scale={{delay: 200}}>
     <div id="actor-credentials">
-        <img src="https://image.tmdb.org/t/p/original{actorDetails.profile_path}" alt="{actorDetails.name}" id="actor-photo">
+        <img src="https://image.tmdb.org/t/p/original{actorDetails.profile_path}" on:error={handleErrorActorImg} alt="{actorDetails.name}" id="actor-photo">
+
+        {#if isGetDocumentId}
+            <FavoriteButton
+                documentId={paramsFavoriteBtn.documentId}
+                isFavorite={paramsFavoriteBtn.isFavorite}
+                deleteMediaToFavorite={paramsFavoriteBtn.deleteActorToFavorite}
+                addMediaToFavorite={paramsFavoriteBtn.addActorToFavorite}
+            />
+        {:else}
+            <div class="loading">
+                <Spinner 
+                    widthSpin={20} 
+                    heightSpin={20}
+                    borderSpin={10}
+                    borderTopSpin={10}
+                    borderRadiusSpin={20}
+                />
+            </div>
+        {/if}
+
         <div id="actor-identity">
             <div id="actor-name">{actorDetails.name}</div>
             <hr>
@@ -11,18 +40,18 @@
                 <div id="actor-others-names">Autre noms : {actorDetails.also_known_as.toString()}</div>
             {/if} -->
             <div id="actor-birthday">
-                née le : {actorDetails.birthday}
-                {#if !actorDetails.deathday}
+                née le : {(actorDetails.birthday) ? actorDetails.birthday : ""}
+                {#if !actorDetails.deathday && actorDetails.deathday}
                     ({(new Date().getFullYear()) - (new Date(actorDetails.birthday).getFullYear())} ans)
                 {/if}
             </div>
             <div id="actor-place-birth">
-                à {actorDetails.place_of_birth} 
+                à {(actorDetails.place_of_birth) ? actorDetails.place_of_birth : ""} 
             </div>
             <hr>
             {#if actorDetails.deathday}
                 <div id="actor-deathday">
-                    Mort le : {actorDetails.deathday} 
+                    Mort(e) le : {actorDetails.deathday} 
                     ({(new Date(actorDetails.deathday).getFullYear()) - (new Date(actorDetails.birthday).getFullYear())} ans)</div>    
             {/if}
         </div>
@@ -32,7 +61,7 @@
 </div>
 
 <style>
-    #actor-birthday, #actor-place-birth, #actor-overwiew {
+    #actor-birthday, #actor-place-birth, #actor-deathday, #actor-overwiew {
         color: white;
         font-size: large;
 
@@ -51,7 +80,11 @@
     #actor-credentials {
         display: flex;
         gap: 10%;
-
+    }
+    #actor-credentials > :global(button#btn-favorite), #actor-credentials > :global(button#btn-added) {
+        position: absolute;
+        top: 0;
+        left: 0;
     }
     #actor-name {
         font-family: 'Bungee Inline', cursive;

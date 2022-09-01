@@ -40,15 +40,12 @@ const getMovieById = async(movie_id: number) => {
 
         let docId: string;
         querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            // console.log(doc.id, " => ", doc.data());
-
             docId = doc.id
         });
 
         return docId;
     } catch (error) {
-        console.error("Error getting document: ", error);
+        throw new Error("Error getting document: ", error);
         
     }
 }
@@ -67,7 +64,7 @@ const deleteMovie = async(doc_id: string) => {
     try {
        await deleteDoc(doc(db, "movie", doc_id));
     } catch (error) {
-        console.error("Error deleting document: ", error);
+        throw new Error("Error deleting document: ", error);
         
     }
 }

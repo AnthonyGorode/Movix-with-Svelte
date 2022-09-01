@@ -12,7 +12,7 @@
 
 <Router url="{url}">
   <Navbar />
-   <div>   
+   <div id="app-block">   
     <Route path="/"> <Home /> </Route>
     <Route path="home"> <Home /> </Route>
      <Route path="movie-details/:id" component="{MovieDetails}" let:params>

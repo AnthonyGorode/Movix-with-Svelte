@@ -4,19 +4,7 @@
 
     export let poster_path: string;
     export let id: number;
-
-    // const reloadImage = (pThis, poster_path) => {
-    //     // To prevent this from being executed over and over
-    //     pThis.onerror = null; 
-        
-    //     // Refresh the src attribute, which should make the
-    //     // browsers reload the iamge.
-    //     pThis.src = poster_path;
-        
-    //     console.log(pThis);
-
-    //     return pThis;
-    // }
+    export let title;
 </script>
 
 <style>
@@ -44,8 +32,8 @@
     <Link to="/movie-details/{id}">
         <!-- <div class="block_transparent"></div> -->
         <img 
-            src="https://image.tmdb.org/t/p/w500{poster_path}" 
-            alt="poster film"
+            src="https://image.tmdb.org/t/p/w500{poster_path}"
+            alt={`${title} poster`}
             loading="lazy"
             in:slide
         >  

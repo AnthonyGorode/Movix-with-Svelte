@@ -1,11 +1,10 @@
 <script lang="ts">
     import { onMount } from "svelte";   
     import { navigate } from "svelte-routing";
-    import { scale, fade } from "svelte/transition";
-	import { slide } from 'svelte/transition';
+    import { scale, slide } from "svelte/transition";
 
     import Spinner from "../components/Spinner.svelte";
-
+    import FavoriteButton from "../components/FavoriteButton.svelte";
 
     import {
         getMovieDetails,
@@ -21,6 +20,8 @@
         deleteMovie
     } from "../services/movieRepo";
 
+    import { handleErrorActorImg } from "../services/utils/handleError"
+
     import type MovieModel from "../models/movie.model";
 
     export let id;
@@ -33,13 +34,11 @@
 
     let isGetDocumentId: boolean = false;
     let isFavoris: boolean = false;
-    const animate = (node, args) =>
-		args.cond ? scale(node, args) : fade(node, args);
 
     let documentId: string; // document ID of movie added on firebase
 
     onMount(async() => {
-        if(id) await fetchMovieDetails(id);
+        if(Number(id)) await fetchMovieDetails(id);
         else navigate("/home", { replace: true });
         
         initMovieDetails();
@@ -74,6 +73,8 @@
             images: await getMovieImages(idMovie),
             recommendations: await getMovieRecommendations(idMovie)
         };
+        
+        datas.recommendations.sort((a,b) => b.vote_count - a.vote_count);
     }
 
     const fetchMovieFromRecommendations = async(idMovie: number) => {
@@ -99,7 +100,7 @@
         
     }
 
-    const addMovieToFavoris = async() => {
+    const addMovieToFavorite = async() => {
         const { 
             id, title, original_title, overview, tagline, poster_path, backdrop_path, release_date, budget, revenue, popularity, vote_average, vote_count
         } = datas.details;
@@ -114,13 +115,19 @@
         }
     }
 
-    const deleteMovieToFavoris = async(doc_id: string) => {
+    const deleteMovieToFavorite = async(doc_id: string) => {
         try {
             await deleteMovie(doc_id);
             isFavoris = false;
         } catch (error) {
             console.error(error);
         }
+    }
+
+    const navigateToActorDetails = (id) => {
+        localStorage.setItem("previous_page", "movie-details");
+        localStorage.setItem("movie_id", datas.details.id);
+        navigate(`/actor-details/${id}`, { replace: true });
     }
 </script>
 
@@ -140,9 +147,9 @@
                     <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster film">
                 </div>
                 <div id="block-details">
-                    <h1 id="title-details">
+                    <h2 id="title-details">
                         {datas.details.title}
-                    </h1>
+                    </h2>
                     <hr>
                     <div id="content-details">
                         <p>{datas.details.vote_average.toFixed(1)}/10</p>
@@ -155,17 +162,12 @@
                             {/if}
                         </p>
                         {#if isGetDocumentId}
-                            {#if isFavoris}
-                            <button id="btn-added" on:click={ () => deleteMovieToFavoris(documentId) }>
-                                <img class="logo" src="/images/valid-logo.png" alt="logo valid" transition:animate={{ cond: isFavoris }} />
-                                <!-- {#key isFavoris}    
-                                {/key} -->
-                            </button>
-                            {:else}
-                                <button id="btn-favoris" on:click= {() => addMovieToFavoris() }>
-                                    <img class="logo" src="/images/plus-logo.png" alt="logo plus" />
-                                </button>
-                            {/if}
+                            <FavoriteButton 
+                                documentId={documentId}
+                                isFavorite={isFavoris}
+                                deleteMediaToFavorite={deleteMovieToFavorite}
+                                addMediaToFavorite={addMovieToFavorite}
+                            />
                         {:else}
                             <div class="loading">
                                 <Spinner 
@@ -193,18 +195,18 @@
     {/if}
 
     <div class="movie_details" out:scale={{delay: 200}}>
-        <h1>Casting</h1>
+        <h2 class="title_block">Casting</h2>
         <div id="actors">
             {#if datas.actors && timeActors}   
                 {#each datas.actors.cast as actor} 
                     <div 
                         id="actor_{actor.cast_id}"
                         class="block_actor"
-                        on:click={() => navigate(`/actor-details/${actor.id}`, { replace: true })}
+                        on:click={() => navigateToActorDetails(actor.id)}
                     >
-                        <img src="https://image.tmdb.org/t/p/original{actor.profile_path}" alt="{actor.name}" width="200px" height="200px" loading="lazy"/>
-                        <h4 class="actor_content">{actor.name}</h4>
-                        <h5 class="actor_content">{actor.character}</h5>
+                        <img src="https://image.tmdb.org/t/p/original{actor.profile_path}" on:error={handleErrorActorImg} alt="{actor.name}" width="200px" height="200px" loading="lazy"/>
+                        <h3 class="actor_name">{actor.name}</h3>
+                        <h4 class="actor_character">{actor.character}</h4>
                     </div>
                 {/each}
             {:else}
@@ -222,7 +224,7 @@
 
         <hr>
 
-        <h1>Bande annonces</h1>
+        <h2 class="title_block">Bande annonces</h2>
         <div id="trailers">
             {#if datas.videos && timeVideos}
                 {#each datas.videos as video}    
@@ -247,7 +249,7 @@
 
         <hr>
 
-        <h1>Images</h1>
+        <h2 class="title_block">Images</h2>
         <div id="images">
             {#if datas.images && timeImages}
                 {#each datas.images.posters as image, i}    
@@ -270,7 +272,7 @@
 
         <hr>
 
-        <h1>Recommandations</h1>
+        <h2 class="title_block">Recommandations</h2>
         <div id="recommendations">
             {#if datas.recommendations && timeRecommendations} 
                 {#each datas.recommendations as recommendation}     
@@ -308,7 +310,7 @@
     </div>
 {/if}
 <style>
-    .movie_details h1{
+    .movie_details h2{
         padding-left: 20px;
     }
     #block-film-details {
@@ -318,18 +320,6 @@
     #title-details {
         text-shadow: 0 0 4px white, 0 -5px 4px #ffff33, 2px -10px 6px #ffdd33, -2px -15px 11px #ff8800, 2px -25px 18px #ff2200;
         color: #000;
-    }
-    #btn-favoris, #btn-added {    
-        border: 1px solid transparent;
-        background-color: transparent;
-    }
-    #btn-added {
-        width: 50px;
-    }
-    #btn-added img, #btn-favoris img {
-        width: 50px!important;
-        height: 50px!important;
-        box-shadow: none!important;
     }
     #actors, #trailers, #images, #recommendations {
         display: flex;
@@ -384,9 +374,19 @@
     .block_actor img {
         border-radius: 10px;
     }
-    .actor_content {
+    .actor_name, .actor_character {
         overflow-wrap: break-word;
         word-wrap: break-word;
         max-width: 200px;
+
+        color: white;
+    }
+    .actor_name {
+        font-size: 25px;
+    }
+    .actor_character {
+        font-size: 16px;
+        font-family: 'Rye';
+        font-style: italic;
     }
 </style>

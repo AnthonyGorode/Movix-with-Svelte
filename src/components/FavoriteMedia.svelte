@@ -6,19 +6,27 @@
     export let documentId: string;
     export let index: number;
 
-    export let displayMovie;
-    export let removeMovie;
+    export let title: string = "";
+    export let fullName: string = "";
+
+    export let displayMedia = (docId) => {};
+    export let removeMedia;
+    export let handleErrorImg = (pThis) => {};
 </script>
 
 <div class="block_image">
     <img
-        on:click={() => displayMovie(documentId)}
-        src="https://image.tmdb.org/t/p/w500{poster_path}" 
-        alt="poster film"
+        on:click={() => displayMedia(documentId)}
+        src="https://image.tmdb.org/t/p/w500{poster_path}"
+        on:error={handleErrorImg}
+        alt={(title) ? `${title} - poster` : `${fullName} - poster`}
         loading="lazy"
         in:slide
     >
-    <Button outline color="danger" on:click={() => removeMovie(index)}>Supprimer</Button>
+    {#if fullName}
+        <p id="full-name">{fullName}</p>
+    {/if}
+    <Button outline color="danger" on:click={() => removeMedia(index)}>Supprimer</Button>
 </div>
 
 <style>
@@ -44,5 +52,12 @@
     .block_image > :global(button) {
         width: 300px;
         margin-top: 10px;
+    }
+    #full-name {
+        text-align: center;
+        margin-bottom: initial;
+        font-size: 20px;
+        font-weight: 900;
+        color: white;
     }
 </style>
