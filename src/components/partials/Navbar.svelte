@@ -9,7 +9,7 @@
       NavLink
     } from 'sveltestrap';
 
-    import { Link } from "svelte-routing"
+    import { Link } from "svelte-navigator"
   
     let isOpen = false;
   

@@ -1,11 +1,13 @@
 <script>
-  import { Router, Route } from "svelte-routing";
+  import { Router, Route } from "svelte-navigator";
   
   import Navbar from "./components/partials/Navbar.svelte";
-  import Home from "./pages/Home.svelte";
-  import MovieDetails from "./pages/MovieDetails.svelte";
-  import ActorDetails from "./pages/ActorDetails.svelte";
-  import Favorite from "./pages/Favorite.svelte";
+  import Lazy from "./Lazy.svelte";
+
+  const Home = () => import("./pages/Home.svelte");
+  const MovieDetails = () => import("./pages/MovieDetails.svelte");
+  const ActorDetails = () => import("./pages/ActorDetails.svelte");
+  const Favorite = () => import("./pages/Favorite.svelte");
 
   export let url = ""; //This property is necessary declare to avoid ignore the Router
 </script>
@@ -13,38 +15,14 @@
 <Router url="{url}">
   <Navbar />
    <div id="app-block">   
-    <Route path="/"> <Home /> </Route>
-    <Route path="home"> <Home /> </Route>
-     <Route path="movie-details/:id" component="{MovieDetails}" let:params>
-        <MovieDetails id={params.id} />
+    <Route path="/"> <Lazy component="{Home}" /></Route>
+    <Route path="home"> <Lazy component="{Home}" /> </Route>
+     <Route path="movie-details/:id" let:params>
+      <Lazy component={MovieDetails} {params} />
     </Route>
-    <Route path="actor-details/:id" component="{ActorDetails}" let:params>
-        <ActorDetails id={params.id} />
+    <Route path="actor-details/:id" let:params>
+      <Lazy component={ActorDetails} {params} />
     </Route>
-    <Route path="favorites"> <Favorite /> </Route>
-    
-     <!--for now the router just support case sensitive,
-         one workaround colud be add two time the route
-         Example.
-        <Route path="About" component="{About}" /> 
-     -->
+    <Route path="favorites"> <Lazy component="{Favorite}" /> </Route>
    </div>
 </Router>
-<!-- <script>
-	import { onMount } from 'svelte';
-	let characterName;
-
-    onMount(async () => {
-        const response = await fetch('https://swapi.dev/api/people/1');
-        const character = await response.json();
-        characterName = character.name;
-    });
-</script>
-
-<main>
-    {#if characterName === undefined}
-        Loading Character Name...
-    {:else}
-        {characterName}
-    {/if}
-</main> -->

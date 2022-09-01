@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";   
-    import { navigate } from "svelte-routing";
+    import { navigate } from "svelte-navigator";
     import { scale, slide } from "svelte/transition";
 
     import Spinner from "../components/Spinner.svelte";
@@ -24,7 +24,8 @@
 
     import type MovieModel from "../models/movie.model";
 
-    export let id;
+    export let params;
+    const { id } = params;
 
     let datas;
     let timeActors: boolean = false, 

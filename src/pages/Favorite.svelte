@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
 	import { fly } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
-    import { navigate } from "svelte-routing";
+    import { navigate } from "svelte-navigator";
 
     import FavoriteMedia from "../components/FavoriteMedia.svelte";
     import MovieDescription from "../components/MovieDescription.svelte";

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Link } from "svelte-routing";
+    import { Link } from "svelte-navigator";
 	import { slide } from 'svelte/transition';
 
     export let poster_path: string;

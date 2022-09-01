@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";    
-    import { navigate } from "svelte-routing";
+    import { navigate } from "svelte-navigator";
     import { fly, scale } from 'svelte/transition';
 
     import ActorCard from "../components/ActorCard.svelte";
@@ -21,7 +21,9 @@
 
     import type ActorModel from "../models/actor.model";
 
-    export let id;
+    export let params;
+    const { id } = params;
+    
     let actorDatas;
 
     let isGetDocumentId: boolean = false;
