@@ -22,10 +22,10 @@
 
     onMount(async() => {
 		datas = await fetchMovies();
-        // const test = datas.discover.sort((a,b) => b.vote_average - a.vote_average);
+        const test = datas.trending.sort((a,b) => b.vote_average - a.vote_average);
 
         setTimeout(() => timeDiscover = true, 1000);
-        setTimeout(() => firstMovie = datas.discover[0], 2000);
+        setTimeout(() => firstMovie = datas.trending[0], 2000);
         setTimeout(() => timeMarvel = true, 4000);
         setTimeout(() => timeTrending = true, 7000);
         console.log(datas);
