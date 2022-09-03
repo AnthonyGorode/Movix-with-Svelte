@@ -6,31 +6,34 @@ const axiosAPI = axios.create({
 });
 
 const apiKey = "2fae416c150ee4b2e2c62a138bf9b3ea";
+type media = "movie" | "tv";
 
-async function fetchMedia(url: string, type: "data" | "results") {
+async function fetchMedia(url: string, type: "data" | "results" | "") {
     const pending = await axiosAPI.get(url);
-    
     if(type === "results") {
         return pending.data.results;
     }
+    if(type === "data") {
+        return pending.data
+    }
 
-    return pending.data
+    return pending;
 }
 
-const getMoviesDiscover = async() => {
-    return fetchMedia(`/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=fr-FR`,"results");
+const getMediaDiscover = async(media: media) => {
+    return fetchMedia(`/discover/${media}?api_key=${apiKey}&sort_by=popularity.desc&page=1&language=fr-FR`,"results");
 }
 
-const getMoviesMarvel = async() => {
-    return fetchMedia(`/movie/popular?api_key=${apiKey}&language=fr&with_companies=420`, "results");
+const getMediaMarvel = async(media: media) => {
+    return fetchMedia(`/${media}/popular?api_key=${apiKey}&language=fr-FR&with_companies=420`, "results");
+}
+
+const getMediaTrending = async(media: media) => {
+    return fetchMedia(`/trending/${media}/week?api_key=${apiKey}&language=fr-FR`, "results");
 }
 
 const getMoviesDC = async() => {
     return fetchMedia(`/movie/popular?api_key=${apiKey}&language=fr&with_companies=9993`, "results");
-}
-
-const getMovieTrending = async() => {
-    return fetchMedia(`/trending/movie/week?api_key=${apiKey}&language=fr-FR`, "results");
 }
 
 const getMovieScifi = async() => {
@@ -40,26 +43,33 @@ const getMovieScifi = async() => {
 const getMovieDrama = async() => {
     return fetchMedia(`/discover/movie?with_genres=18&primary_release_year=2020&api_key=${apiKey}&adult=false&language=fr-FR`, "results");
 }
-
-const getMovieDetails = async(idFilm: number) => {
-    return fetchMedia(`movie/${idFilm}?api_key=${apiKey}&language=fr`, "data");
+// https://api.themoviedb.org/3/tv/92783?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR
+const getMediaDetails = async(idMedia: number, media: media) => {
+    return fetchMedia(`${media}/${idMedia}?api_key=${apiKey}&language=fr`, "data");
 }
 
-const getMovieActors = async(idFilm: number) => {
-    return fetchMedia(`/movie/${idFilm}/credits?api_key=${apiKey}&language=fr-FR`, "data");
+// https://api.themoviedb.org/3/tv/92783/season/1?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR
+const getSeasonDetails = async(idTv: number, numSeason: number) => {
+    return fetchMedia(`tv/${idTv}/season/${numSeason}?api_key=${apiKey}&language=fr`, "data");
 }
 
-// https://api.themoviedb.org/3/movie/522938/images?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr
-const getMovieImages = async(idFilm: number) => {
-    return fetchMedia(`/movie/${idFilm}/images?api_key=${apiKey}&language=fr`, "data");
+// https://api.themoviedb.org/3/tv/92783/credits?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR
+const getMediaActors = async(idFilm: number, media: media) => {
+    return fetchMedia(`/${media}/${idFilm}/credits?api_key=${apiKey}&language=fr-FR`, "data");
 }
 
-const getMovieVideos = async(idFilm: number) => {
-    return fetchMedia(`/movie/${idFilm}/videos?api_key=${apiKey}&language=fr`, "results");
+// https://api.themoviedb.org/3/movie/94997/images?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr
+const getMediaImages = async(idFilm: number, media: media) => {
+    return fetchMedia(`/${media}/${idFilm}/images?api_key=${apiKey}&language=fr`, "data");
 }
+
+const getMediaVideos = async(idFilm: number, media: media) => {
+    return fetchMedia(`/${media}/${idFilm}/videos?api_key=${apiKey}&language=fr`, "results");
+}
+
 // https://api.themoviedb.org/3/movie/610150/recommendations?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr
-const getMovieRecommendations = async(idFilm: number) => {
-    return fetchMedia(`/movie/${idFilm}/recommendations?api_key=${apiKey}&language=fr`, "results");
+const getMediaRecommendations = async(idMedia: number, media: media) => {
+    return fetchMedia(`/${media}/${idMedia}/recommendations?api_key=${apiKey}&language=fr`, "results");
 }
 
 // https://api.themoviedb.org/3/person/1654001?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr
@@ -73,17 +83,18 @@ const getMoviesActor = async(idActor: number) => {
 }
 
 export {
-    getMoviesDiscover,
-    getMoviesMarvel,
+    getMediaDiscover,
+    getMediaMarvel,
+    getMediaTrending,
     getMoviesDC,
-    getMovieTrending,
     getMovieScifi,
     getMovieDrama,
-    getMovieDetails,
-    getMovieActors,
-    getMovieImages,
-    getMovieVideos,
-    getMovieRecommendations,
+    getMediaDetails,
+    getSeasonDetails,
+    getMediaActors,
+    getMediaImages,
+    getMediaVideos,
+    getMediaRecommendations,
     getActorDetails,
     getMoviesActor
 };

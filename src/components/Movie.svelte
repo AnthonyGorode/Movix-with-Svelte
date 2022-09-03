@@ -4,6 +4,7 @@
 
     export let poster_path: string;
     export let id: number;
+    export let media: string;
     export let title;
 </script>
 
@@ -29,11 +30,11 @@
 </style>
 
 <div class="block_image">
-    <Link to="/movie-details/{id}">
+    <Link to="/{media}-details/{id}">
         <!-- <div class="block_transparent"></div> -->
         <img 
             src="https://image.tmdb.org/t/p/w500{poster_path}"
-            alt={`${title} poster`}
+            alt="{title} - poster"
             loading="lazy"
             in:slide
         >  
