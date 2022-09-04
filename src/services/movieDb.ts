@@ -78,8 +78,11 @@ const getActorDetails = async(idActor: number) => {
 }
 // https://api.themoviedb.org/3/person/1654001/movie_credits?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr
 // https://api.themoviedb.org/3/discover/movie?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_cast=3896
-const getMoviesActor = async(idActor: number) => {
-    return fetchMedia(`/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_cast=${idActor}&language=fr-FR`, "results");
+const getAllMediaActor = async(idActor: number, media: media) => {
+    if(media == "movie") {
+        return fetchMedia(`/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_cast=${idActor}&language=fr-FR`, "results");
+    }
+    return fetchMedia(`https://api.themoviedb.org/3/person/${idActor}/tv_credits?api_key=${apiKey}&language=fr`, "data");
 }
 
 export {
@@ -96,5 +99,5 @@ export {
     getMediaVideos,
     getMediaRecommendations,
     getActorDetails,
-    getMoviesActor
+    getAllMediaActor
 };

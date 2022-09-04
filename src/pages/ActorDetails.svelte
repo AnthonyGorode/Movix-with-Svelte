@@ -10,7 +10,7 @@
 
     import {
         getActorDetails,
-        getMoviesActor
+        getAllMediaActor
     } from "../services/movieDb";
 
     import { 
@@ -26,6 +26,9 @@
     
     let actorDatas;
 
+    let timeMovies: boolean = false;
+    let timeSeries: boolean = false;
+
     let isGetDocumentId: boolean = false;
     let isFavorite: boolean = false;
 
@@ -37,10 +40,8 @@
         if(id) await fetchActorDetails(id);
         else navigate("/home", { replace: true });
 
-        if(actorDatas) {
-            console.log(actorDatas.details);
-            console.log(actorDatas.movies);
-        }
+        setTimeout(() => timeMovies = true, 1500);
+        setTimeout(() => timeSeries = true, 3000);
         
         await getFavorisId();
         actorDatas = actorDatas;
@@ -49,8 +50,34 @@
     const fetchActorDetails = async(idActor: number) => {
         actorDatas = {
             details: await getActorDetails(idActor), // {}
-            movies: await getMoviesActor(idActor) // []
+            movies: await getAllMediaActor(idActor, "movie"), // []
+            series: []
         }
+        const series = await getAllMediaActor(idActor, "tv");
+        let arrayToFilter: any[] = [];
+        if(series.cast.length > 20) {
+            for(let i = 0; i < 20; i++) {
+                arrayToFilter.push(series.cast[i]);
+            }
+        } else {
+            arrayToFilter = series.cast;
+        }
+        actorDatas.series = filterDuplicateElement(arrayToFilter);
+        actorDatas.series.sort((a,b) => b.popularity - a.popularity); 
+    }
+
+    const filterDuplicateElement = (arrayToFilter) => {
+        var seen = {};
+        let arrayFiltered = [];
+        arrayToFilter.map(function(currentObject) {
+            if (!seen.hasOwnProperty(currentObject.id.toString())) {
+                // Current id is being seen for the first time              
+                arrayFiltered.push(currentObject);
+                seen[currentObject.id.toString()] = false;
+            }
+        });
+
+        return arrayFiltered;
     }
 
     const getFavorisId = async() => {
@@ -109,20 +136,44 @@
             isGetDocumentId={isGetDocumentId}
             paramsFavoriteBtn={{documentId, isFavorite, addActorToFavorite, deleteActorToFavorite}}
         />
-        <div id="movies-block" in:fly="{{ y: 100, duration: 1000 }}" out:scale={{delay: 200}}>
-            <div id="title">Filmographie</div>
+        <div id="media-block" in:fly="{{ y: 100, duration: 1000 }}" out:scale={{delay: 200}}>
+            <div id="title-movies">Filmographie</div>
             <div id="movies">
-                {#each actorDatas.movies as {poster_path, id, title}} 
-                    <Movie poster_path={poster_path} id={id} title={title} />
-                {/each}
+                {#if actorDatas.movies && timeMovies}    
+                    {#each actorDatas.movies as {poster_path, id, title}} 
+                        <Movie poster_path={poster_path} id={id} title={title} media="movie" />
+                    {/each}
+                {:else}
+                    <div class="loading">
+                        <Spinner 
+                            widthSpin={50} 
+                            heightSpin={50}
+                            borderSpin={10}
+                            borderTopSpin={10}
+                            borderRadiusSpin={50}
+                        />
+                    </div>
+                {/if}
             </div>
 
-            <!-- <div id="title">Séries</div>
-            <div id="movies">
-                {#each actorDatas.movies as {poster_path, id, title}} 
-                    <Movie poster_path={poster_path} id={id} title={title} />
-                {/each}
-            </div> -->
+            <div id="title-series">Séries TV</div>
+            <div id="series">
+                {#if actorDatas.series && timeSeries}
+                    {#each actorDatas.series as {poster_path, id, title}} 
+                        <Movie poster_path={poster_path} id={id} title={title} media="tv" />
+                    {/each}
+                {:else}
+                    <div class="loading">
+                        <Spinner 
+                            widthSpin={50} 
+                            heightSpin={50}
+                            borderSpin={10}
+                            borderTopSpin={10}
+                            borderRadiusSpin={50}
+                        />
+                    </div>
+                {/if}
+            </div>
         </div>
     </div>
 {:else}
@@ -149,11 +200,11 @@
         width: 40%;
         height: 100%;
     }
-    #movies-block {     
+    #media-block {     
         width: 60%;
         overflow-x: hidden;
     }
-    #title {
+    #title-movies, #title-series {
         font-family: 'Bungee Inline', cursive;
         text-align: center;
         color: rgba(27.45%, 22.75%, 19.22%, 0.88);
@@ -163,7 +214,10 @@
         font-weight: 500;
         line-height: 1.2;
     }
-    #movies {
+    #title-series {
+        margin-top: 10px;
+    }
+    #movies, #series {
         display: flex;
 
         overflow-x: scroll;
@@ -173,16 +227,16 @@
         padding: 10px;
         margin-left: 20px;
     }
-    #movies::-webkit-scrollbar {
+    #movies::-webkit-scrollbar, #series::-webkit-scrollbar {
             width: 15px;
             background-color: #F5F5F5;
         } 
-    #movies::-webkit-scrollbar-thumb {
+    #movies::-webkit-scrollbar-thumb, #series::-webkit-scrollbar-thumb {
         border-radius: 20px;
         background: radial-gradient(#d4d4d4, rgba(27.45%, 22.75%, 19.22%, 0.88));
         box-shadow: 1px 1px 12px #555;
     } 
-    #movies::-webkit-scrollbar-track {
+    #movies::-webkit-scrollbar-track, #series::-webkit-scrollbar-track {
         border-radius: 10px;
         box-shadow: none;
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);

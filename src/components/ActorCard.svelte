@@ -4,6 +4,7 @@
     import Spinner from "../components/Spinner.svelte";
     import FavoriteButton from "../components/FavoriteButton.svelte";
 
+    import moment from "../services/utils/momentCustom";
     import { handleErrorActorImg } from "../services/utils/handleError";
 
     export let actorDetails;
@@ -24,11 +25,11 @@
         {:else}
             <div class="loading">
                 <Spinner 
-                    widthSpin={20} 
-                    heightSpin={20}
+                    widthSpin={30} 
+                    heightSpin={30}
                     borderSpin={10}
                     borderTopSpin={10}
-                    borderRadiusSpin={20}
+                    borderRadiusSpin={50}
                 />
             </div>
         {/if}
@@ -40,7 +41,7 @@
                 <div id="actor-others-names">Autre noms : {actorDetails.also_known_as.toString()}</div>
             {/if} -->
             <div id="actor-birthday">
-                née le : {(actorDetails.birthday) ? actorDetails.birthday : ""}
+                née le : {(actorDetails.birthday) ? moment(actorDetails.birthday).format("LL") : ""}
                 {#if !actorDetails.deathday && actorDetails.deathday}
                     ({(new Date().getFullYear()) - (new Date(actorDetails.birthday).getFullYear())} ans)
                 {/if}
@@ -51,7 +52,7 @@
             <hr>
             {#if actorDetails.deathday}
                 <div id="actor-deathday">
-                    Mort(e) le : {actorDetails.deathday} 
+                    Mort(e) le : {moment(actorDetails.deathday).format("LL")} 
                     ({(new Date(actorDetails.deathday).getFullYear()) - (new Date(actorDetails.birthday).getFullYear())} ans)</div>    
             {/if}
         </div>
@@ -85,6 +86,11 @@
         position: absolute;
         top: 0;
         left: 0;
+    }
+    #actor-credentials > .loading {
+        position: absolute;
+        width: unset;
+
     }
     #actor-name {
         font-family: 'Bungee Inline', cursive;
