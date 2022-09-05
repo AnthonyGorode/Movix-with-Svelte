@@ -21,7 +21,7 @@ async function fetchMedia(url: string, type: "data" | "results" | "") {
 }
 
 const getMediaDiscover = async(media: media) => {
-    return fetchMedia(`/discover/${media}?api_key=${apiKey}&sort_by=popularity.desc&page=1&language=fr-FR`,"results");
+    return fetchMedia(`/discover/${media}?api_key=${apiKey}&with_original_language=en&sort_by=popularity.desc&page=1&language=fr-FR`,"results");
 }
 
 const getMediaMarvel = async(media: media) => {
@@ -34,7 +34,7 @@ const getMediaTrending = async(media: media) => {
 
 // https://api.themoviedb.org/3/tv/popular?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR&page=1&with_genres=16&with_original_language=ja
 const getMediaAnimes = async(media: media) => {
-    return fetchMedia(`/${media}/popular?api_key=${apiKey}&page=1&with_genres=16&with_original_language=ja&language=fr-FR`, "results");
+    return fetchMedia(`/${media}/popular?api_key=${apiKey}&page=1&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&language=fr-FR`, "results");
 }
 
 const getMoviesDC = async() => {
@@ -94,6 +94,7 @@ export {
     getMediaDiscover,
     getMediaMarvel,
     getMediaTrending,
+    getMediaAnimes,
     getMoviesDC,
     getMovieScifi,
     getMovieDrama,

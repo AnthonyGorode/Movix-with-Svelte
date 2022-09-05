@@ -194,7 +194,9 @@
         >
             <div style="display: flex;justify-content: center;width: 70%;color: white;margin:2%;">
                 <div id="block-image">
-                    <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster tv">
+                    <a id="image_{datas.details.id}" href="https://image.tmdb.org/t/p/original{datas.details.poster_path}" target="_blank">
+                        <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster tv">
+                    </a>
                 </div>
                 <div id="block-details">
                     <h2 id="title-details">
@@ -511,6 +513,11 @@
     }
     .tv_details h2{
         padding-left: 20px;
+    }
+    
+    #block-image:hover {
+        cursor: pointer;
+        transform: scale(1.04);
     }
     #block-tv-details {
         display: flex;

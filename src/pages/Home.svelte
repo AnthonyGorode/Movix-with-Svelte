@@ -11,21 +11,25 @@
     import {
         getMediaDiscover,
         getMediaMarvel,
-        getMediaTrending
+        getMediaTrending,
+        getMediaAnimes
     } from "../services/movieDb";
 
     let loadingDatas: boolean = false;
 
     let datasDiscover: {movie: any[], tv: any[]} = {movie: [], tv: []};
-    let datasMarvel: {movie: any[], tv: any[]} = {movie: [], tv: []};
+    let datasAnime: {movie: any[], tv: any[]} = {movie: [], tv: []};
     let datasTrending: {movie: any[], tv: any[]} = {movie: [], tv: []};
+    let datasMarvel: {movie: any[], tv: any[]} = {movie: [], tv: []};
 
     let keyMediaDiscover: string = "movie";
-    let keyMediaMarvel: string = "movie";
+    let keyMediaAnime: string = "movie";
     let keyMediaTrending: string = "movie";
+    let keyMediaMarvel: string = "movie";
     let firstMovie;
 
     let timeDiscover: boolean = false;
+    let timeAnime: boolean = false;
     let timeMarvel: boolean = false;
     let timeTrending: boolean = false;
 
@@ -38,6 +42,7 @@
             datasDiscover.movie = await getMediaDiscover("movie");
             datasMarvel.movie = await getMediaMarvel("movie");
             datasTrending.movie = await getMediaTrending("movie");
+            datasAnime.movie = await getMediaAnimes("movie");
             
             datasTrending.movie.sort((a,b) => b.vote_average - a.vote_average);
 
@@ -45,8 +50,9 @@
 
             setTimeout(async() => timeDiscover = true, 1000);
             setTimeout(async() => firstMovie = datasDiscover.movie.find(movie => movie.id == "616037"), 2000);
-            setTimeout(async() => timeMarvel = true, 3000);
+            setTimeout(async() => timeAnime = true, 3000);
             setTimeout(async() => timeTrending = true, 6000);
+            setTimeout(async() => timeMarvel = true, 8000);
         } catch (error) {
             loadingDatas = true;
             console.error(error);
@@ -92,6 +98,19 @@
                     timeTrending = true;
                 },1800);
                 break;
+
+            case "anime":
+                timeAnime = false;
+                if(!datasAnime[media].length) {
+                    datasAnime[media] = await getMediaAnimes(media);
+                }
+                keyMediaAnime = media;
+                
+                setTimeout(() => {
+                    datasAnime[media] = datasAnime[media];
+                    timeAnime = true;
+                },1800);
+                break;
         }
     }
 
@@ -128,14 +147,14 @@
     <hr>
 
     <div class="title_container" out:scale={{delay: 200}}>
-        <h2 class="title_block">Best Marvel</h2>
-        <SelectorMedia keyMedia={keyMediaMarvel} typeMedia="marvel" switchMedia={switchMedia} />
+        <h2 class="title_block">Animes Populaires</h2>
+        <SelectorMedia keyMedia={keyMediaAnime} typeMedia="anime" switchMedia={switchMedia} />
     </div>
-    <div id="marvel" out:scale={{delay: 200}}>
-    {#if datasMarvel[keyMediaMarvel] && timeMarvel}    
-        {#each datasMarvel[keyMediaMarvel] as {poster_path, id, title}, index ({poster_path, id, title})}
+    <div id="anime" out:scale={{delay: 200}}>
+    {#if datasAnime[keyMediaAnime] && timeAnime}    
+        {#each datasAnime[keyMediaAnime] as {poster_path, id, title}, index ({poster_path, id, title})}
             <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>   
-                <Movie poster_path={poster_path} id={id} media={keyMediaMarvel} title={title} />
+                <Movie poster_path={poster_path} id={id} media={keyMediaAnime} title={title} />
             </div>
         {/each}
 
@@ -163,6 +182,33 @@
         {#each datasTrending[keyMediaTrending] as {poster_path, id, title}, index ({poster_path, id, title})}
             <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>   
                 <Movie poster_path={poster_path} id={id} media={keyMediaTrending} title={title} />
+            </div>
+        {/each}
+
+    {:else}
+        <div class="loading">
+            <Spinner 
+                widthSpin={50} 
+                heightSpin={50}
+                borderSpin={10}
+                borderTopSpin={10}
+                borderRadiusSpin={50}
+            />
+        </div>
+    {/if}
+    </div>
+
+    <hr>
+
+    <div class="title_container" out:scale={{delay: 200}}>
+        <h2 class="title_block">Best Marvel</h2>
+        <SelectorMedia keyMedia={keyMediaMarvel} typeMedia="marvel" switchMedia={switchMedia} />
+    </div>
+    <div id="marvel" out:scale={{delay: 200}}>
+    {#if datasMarvel[keyMediaMarvel] && timeMarvel}    
+        {#each datasMarvel[keyMediaMarvel] as {poster_path, id, title}, index ({poster_path, id, title})}
+            <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>   
+                <Movie poster_path={poster_path} id={id} media={keyMediaMarvel} title={title} />
             </div>
         {/each}
 
@@ -227,7 +273,7 @@
 </div> -->
 
 <style>
-    #discover, #marvel, #trending {
+    #discover, #anime, #trending, #marvel {
         display: flex;
 
         overflow-x: scroll;
@@ -240,21 +286,24 @@
         height: 411px;
     }
     #discover::-webkit-scrollbar,
-    #marvel::-webkit-scrollbar,
-    #trending::-webkit-scrollbar {
+    #anime::-webkit-scrollbar,
+    #trending::-webkit-scrollbar,
+    #marvel::-webkit-scrollbar {
         width: 15px;
         background-color: #F5F5F5;
     } 
-    #discover::-webkit-scrollbar-thumb, 
-    #marvel::-webkit-scrollbar-thumb, 
-    #trending::-webkit-scrollbar-thumb {
+    #discover::-webkit-scrollbar-thumb,
+    #anime::-webkit-scrollbar-thumb,
+    #trending::-webkit-scrollbar-thumb,
+    #marvel::-webkit-scrollbar-thumb {
         border-radius: 20px;
         background: radial-gradient(#d4d4d4, rgba(27.45%, 22.75%, 19.22%, 0.88));
         box-shadow: 1px 1px 12px #555;
     } 
-    #discover::-webkit-scrollbar-track, 
-    #marvel::-webkit-scrollbar-track,
-    #trending::-webkit-scrollbar-track {
+    #discover::-webkit-scrollbar-track,
+    #anime::-webkit-scrollbar-track,
+    #trending::-webkit-scrollbar-track, 
+    #marvel::-webkit-scrollbar-track {
         border-radius: 10px;
         box-shadow: none;
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);

@@ -25,7 +25,7 @@
         font-size: 16px;
         cursor: pointer;
     }
-    .switch_active_discover, .switch_active_marvel, .switch_active_trending  {
+    .switch_active_discover, .switch_active_anime, .switch_active_trending, .switch_active_marvel {
         background-color: rgba(27.45%, 22.75%, 19.22%, 0.88);
         border-radius: 30px;
         color: white;
