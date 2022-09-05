@@ -54,7 +54,7 @@
         else navigate("/home", { replace: true });
         
         initTvDetails();
-        // await getFavorisId();
+        await getFavorisId();
         
         console.log(datas);
         datas = datas;
@@ -262,7 +262,7 @@
                             {new Date(datas.details.seasons[seasonSelected].air_date).getFullYear()} | {datas.details.seasons[seasonSelected].episode_count} épisodes
                         </p>
                     </div>
-                    <p>La {(datas.details.seasons[seasonSelected].season_number) ? datas.details.seasons[seasonSelected].name : "Saison 0"} de {datas.details.name} a été diffusée à partir du {moment(datas.details.seasons[seasonSelected].air_date).format("LL")}.</p>
+                    <p>La {(datas.details.seasons[seasonSelected].season_number) ? datas.details.seasons[seasonSelected].name : "Saison 0"} de {datas.details.name} a été diffusée à partir du {(datas.details.seasons[seasonSelected].air_date) ? moment(datas.details.seasons[seasonSelected].air_date).format("LL") : "(Aucune date)"}.</p>
                     <p id="overview-season">{datas.details.seasons[seasonSelected].overview}</p>
                     {#if datas.details.seasons[seasonSelected].season_number > 0}
                         <p id="display-episodes" on:click={() => fetchAllEpisodesSeason(datas.details.seasons[seasonSelected].season_number)}>Episodes <img src="/images/icon-arrow-bottom.png" alt="icon arrow bottom"></p>

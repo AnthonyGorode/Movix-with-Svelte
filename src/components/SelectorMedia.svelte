@@ -1,12 +1,12 @@
 <script lang="ts">
     export let keyMedia;
     export let switchMedia;
-    export let typeMedia; // discover | marvel | trending
+    export let typeMedia; // discover | marvel | trending | null
 </script>
 
 <div class="selector">
-    <h3 class="{keyMedia == 'movie' ? 'switch_active_' + typeMedia : '' }" on:click={() => switchMedia(typeMedia, "movie")}>Films</h3>
-    <h3 class="{keyMedia == 'tv' ? 'switch_active_' + typeMedia : '' }" on:click={() => switchMedia(typeMedia, "tv")}>Séries</h3>
+    <h3 class="{keyMedia == 'movie' ? 'switch_active_' + typeMedia : '' }" on:click={() => switchMedia("movie", typeMedia)}>Films</h3>
+    <h3 class="{keyMedia == 'tv' ? 'switch_active_' + typeMedia : '' }" on:click={() => switchMedia("tv", typeMedia)}>Séries</h3>
 </div>
 
 <style>

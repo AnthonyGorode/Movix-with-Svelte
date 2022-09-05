@@ -1,56 +1,80 @@
 <script lang="ts">  
     import { onMount } from "svelte";
-	import { fly } from 'svelte/transition';
+	import { fly, scale } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
     import { navigate } from "svelte-navigator";
 
     import FavoriteMedia from "../components/FavoriteMedia.svelte";
-    import MovieDescription from "../components/MovieDescription.svelte";
+    import MediaDescription from "../components/MediaDescription.svelte";
     import Spinner from "../components/Spinner.svelte";
+    import SelectorMedia from "../components/SelectorMedia.svelte";
 
     import { getMovies, deleteMovie } from "../services/movieRepo";
+    import { getTvs, deleteTv } from "../services/tvRepo";
     import { getActors, deleteActor } from "../services/actorRepo";
     import { handleErrorActorImg } from "../services/utils/handleError";
     
     import type FavoriteMovieModel from '../models/FavoriteMovie.model';
+    import type FavoriteTvModel from "../models/favoriteTv.model";
     import type FavoriteActorModel from '../models/favoriteActor.model';
     import type MovieModel from "../models/movie.model";
+    import type TvModel from "../models/tv.model";
 
-    let favoritesMovies: FavoriteMovieModel[] = [];
+    let favoritesDatas: {movie: FavoriteMovieModel[], tv: FavoriteTvModel[]} = {movie: [], tv: []};
+    let keyMediaFavorite: "movie" | "tv" = "movie"; // movie | tv
+
     let favoritesActors: FavoriteActorModel[] = [];
 
-    let movieDisplayed: MovieModel;
+    let mediaDisplayed: MovieModel | TvModel;
 
-    let timeMovies: boolean = false;
+    let loadingDatas:boolean = false;
+    let timeMedia: boolean = false;
     let timeActors: boolean = false;
 
     let noFavoritesMovies: boolean = false;
+    let noFavoritesTvs: boolean = false;
     let noFavoritesActors: boolean = false;
 
-    onMount(async() => {
-        favoritesMovies = await getMovies();
-        favoritesActors = await getActors();
-        initFavoriteComponent();
+    onMount(async() => {      
+        initFavoriteComponent();   
     });
 
-    const initFavoriteComponent = () => {
-        if(favoritesMovies) {
-            setTimeout(() => {
-                timeMovies = true;
-            }, 1000);
-            setTimeout(() => {
-                movieDisplayed = favoritesMovies[0].movie;
-            }, 2000);
-        }
-        else noFavoritesMovies = true;
-        
-        if(favoritesActors) setTimeout(() => timeActors = true, 3000);
-        else noFavoritesActors = true;
+    const initFavoriteComponent = async() => {
+        try {
+            favoritesDatas.movie = await getMovies();
+            favoritesDatas.tv = await getTvs();
+            favoritesActors = await getActors();
+
+            if(favoritesDatas.movie.length) {
+                setTimeout(() => {
+                    timeMedia = true;
+                }, 1000);
+                setTimeout(() => {
+                    mediaDisplayed = favoritesDatas.movie[0].movie;
+                }, 2000);
+            }
+            else noFavoritesMovies = true;
+
+            if(!favoritesDatas.tv.length) noFavoritesTvs = true;
+            
+            if(favoritesActors) setTimeout(() => timeActors = true, 3000);
+            else noFavoritesActors = true;
+            
+            loadingDatas = true;
+        } catch (error) {
+            loadingDatas = true;
+            console.error(error);
+        }    
     }
 
-    const displayMovie = (documentId: string) => {
-        movieDisplayed = favoritesMovies.find(favorite => favorite.documentId == documentId).movie;
-        document.body.scrollIntoView();
+    const displayMedia = (documentId: string, media: "movie" | "tv") => {
+        if(media == "movie") {
+            mediaDisplayed = favoritesDatas.movie.find(favorite => favorite.documentId == documentId).movie;
+            document.body.scrollIntoView();
+        } else {
+            mediaDisplayed = favoritesDatas.tv.find(favorite => favorite.documentId == documentId).tv;
+            document.body.scrollIntoView();
+        }
     }
 
     const displayActorDetails = (documentId: string) => {
@@ -60,23 +84,43 @@
     }
 
     const removeMovieToFavorite = async(index: number) => {
-        const documentId = favoritesMovies[index].documentId;
-        const movie_id = favoritesMovies[index].movie.id;
+        const documentId = favoritesDatas.movie[index].documentId;
+        const movie_id = favoritesDatas.movie[index].movie.id;
 
         await deleteMovie(documentId);
 
-        favoritesMovies.splice(index, 1);
+        favoritesDatas.movie.splice(index, 1);
 
-        if(favoritesMovies.length == 0) {
+        if(favoritesDatas.movie.length == 0) {
             noFavoritesMovies = true;
-            movieDisplayed = null;
+            mediaDisplayed = null;
         } else {
-            if(movieDisplayed.id == movie_id) {
-                movieDisplayed = favoritesMovies[0].movie;
+            if(mediaDisplayed.id == movie_id) {
+                mediaDisplayed = favoritesDatas.movie[0].movie;
             }
         }
 
-        favoritesMovies = favoritesMovies;
+        favoritesDatas.movie = favoritesDatas.movie;
+    }
+
+    const removeTvToFavorite = async(index: number) => {
+        const documentId = favoritesDatas.tv[index].documentId;
+        const tv_id = favoritesDatas.tv[index].tv.id;
+
+        await deleteTv(documentId);
+
+        favoritesDatas.tv.splice(index, 1);
+
+        if(favoritesDatas.tv.length == 0) {
+            noFavoritesTvs = true;
+            mediaDisplayed = null;
+        } else {
+            if(mediaDisplayed.id == tv_id) {
+                mediaDisplayed = favoritesDatas.tv[0].tv;
+            }
+        }
+
+        favoritesDatas.tv = favoritesDatas.tv;
     }
 
     const removeActorToFavorite = async(index: number) => {
@@ -93,28 +137,47 @@
         favoritesActors = favoritesActors;
     }
 
+    const switchMedia = async(media: "movie" | "tv", type: string = "") => {
+        timeMedia = false;
+        keyMediaFavorite = media;
+        setTimeout(() => {
+            if(favoritesDatas[media].length) {
+                mediaDisplayed = favoritesDatas[media][0][media];
+            } else {
+                mediaDisplayed = null;
+            }
+            timeMedia = true;
+        },1800);
+    }
+
 </script>
 
-{#if favoritesMovies}
-    {#if movieDisplayed}
-        <MovieDescription movie={movieDisplayed} />
+{#if loadingDatas}
+    {#if mediaDisplayed}
+        <MediaDescription media={mediaDisplayed} typeMedia={keyMediaFavorite} />
     {/if}
-
-    <h2 class="title_block" style="margin-top: 20px;"> Films </h2>
-    <div class="block_media">
-        {#if timeMovies}
-            {#if noFavoritesMovies}
+    <div class="title_container" out:scale={{delay: 200}}>
+        <h2 class="title_block" style="margin-top: 20px;"> {keyMediaFavorite == "movie" ? "Films" : "Séries TV"} </h2>
+        <SelectorMedia keyMedia={keyMediaFavorite} typeMedia="discover" switchMedia={switchMedia} />
+    </div>
+    <div class="block_media" out:scale={{delay: 200}}>
+        {#if timeMedia}
+            {#if keyMediaFavorite == "movie" && noFavoritesMovies}
                 <p class="no_media_text">Aucun film pour le moment</p>
+            {:else if keyMediaFavorite == "tv" && noFavoritesTvs}           
+                <p class="no_media_text">Aucune Série TV pour le moment</p>
             {:else}
-                {#each favoritesMovies as favorite , i (favorite)}
+                {#each favoritesDatas[keyMediaFavorite] as favorite , i (favorite)}
                 <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>
                     <FavoriteMedia 
                         documentId={favorite.documentId} 
-                        poster_path={favorite.movie.poster_path}
+                        poster_path={favorite[keyMediaFavorite].poster_path}
                         index={i}
-                        title={favorite.movie.title}
-                        displayMedia={displayMovie}
-                        removeMedia={removeMovieToFavorite}
+                        title={favorite[keyMediaFavorite].title}
+                        typeMedia={keyMediaFavorite}
+                        displayMedia={displayMedia}
+                        removeMovie={removeMovieToFavorite}
+                        removeTv={removeTvToFavorite}
                     />
                 </div>            
                 {/each}
@@ -132,8 +195,8 @@
         {/if}
     </div>
 
-    <h2 class="title_block" style="margin-top: 20px;"> Acteurs / Actrices </h2>
-    <div class="block_media">
+    <h2 class="title_block" style="margin-top: 20px;" out:scale={{delay: 200}}> Acteurs / Actrices </h2>
+    <div class="block_media" out:scale={{delay: 200}}>
         {#if timeActors}
             {#if noFavoritesActors}
                 <p class="no_media_text">Aucun Acteur ou Actrice pour le moment</p>
@@ -145,6 +208,7 @@
                         poster_path={favorite.actor.profile_path}
                         fullName={favorite.actor.name}
                         index={i}
+                        typeMedia={keyMediaFavorite}
                         displayMedia={displayActorDetails}
                         removeMedia={removeActorToFavorite}
                         handleErrorImg={handleErrorActorImg}

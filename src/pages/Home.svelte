@@ -53,14 +53,12 @@
         }
     }
 
-    const switchMedia = async(type: string, media: "movie" | "tv") => {
-        console.log(type, media);
+    const switchMedia = async(media: "movie" | "tv", type: string = "") => {
         switch(type) {
             case "discover":
                 timeDiscover = false;
                 if(!datasDiscover[media].length) {
                     datasDiscover[media] = await getMediaDiscover(media);
-                    console.log(datasDiscover);
                     // datas[type][media].sort((a,b) => b.vote_average - a.vote_average);
                 }
                 keyMediaDiscover = media;
@@ -229,12 +227,6 @@
 </div> -->
 
 <style>
-    .title_container {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        align-content: center;
-    }
     #discover, #marvel, #trending {
         display: flex;
 

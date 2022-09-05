@@ -7,6 +7,13 @@
   white-space: nowrap;
 }
 
+.title_container { /* For selector to switch media */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: center;
+}
+
 .title_block {      
   padding-left: 20px;
   font-family: 'Bungee Inline', cursive;

@@ -145,7 +145,9 @@
         >
             <div style="display: flex;justify-content: center;width: 70%;color: white;margin:2%;">
                 <div id="block-image">
-                    <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster film">
+                    <a id="image_{datas.details.id}" href="https://image.tmdb.org/t/p/original{datas.details.poster_path}" target="_blank">
+                        <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster film">
+                    </a>
                 </div>
                 <div id="block-details">
                     <h2 id="title-details">
@@ -226,7 +228,7 @@
         <hr>
 
         <h2 class="title_block">Bande annonces</h2>
-        <div id="trailers">
+        <div id="trailers" class={(!timeVideos) ? "loading_datas" : ""}>
             {#if datas.videos && timeVideos}
                 {#each datas.videos as video}    
                     <div id="video_{video.id}">
@@ -251,7 +253,7 @@
         <hr>
 
         <h2 class="title_block">Images</h2>
-        <div id="images">
+        <div id="images" class={(!timeImages) ? "loading_datas" : ""}>
             {#if datas.images && timeImages}
                 {#each datas.images.posters as image, i}    
                     <a id="image_{i}" class="block_image" href="https://image.tmdb.org/t/p/original{image.file_path}" target="_blank">
@@ -274,7 +276,7 @@
         <hr>
 
         <h2 class="title_block">Recommandations</h2>
-        <div id="recommendations">
+        <div id="recommendations" class={(!timeRecommendations) ? "loading_datas" : ""}>
             {#if datas.recommendations && timeRecommendations} 
                 {#each datas.recommendations as recommendation}     
                     <div 
@@ -314,6 +316,9 @@
     .movie_details h2{
         padding-left: 20px;
     }
+    .loading_datas {
+        height: 411px;
+    }
     #block-film-details {
         height: auto;
         box-shadow: -3px 3px 2px 1px rgb(0 0 0 / 20%);
@@ -332,7 +337,6 @@
         box-shadow: 10px 5px 5px grey;
         padding: 10px;
         margin: 10px;
-        height: 411px;
     }
     #actors::-webkit-scrollbar, #trailers::-webkit-scrollbar, #images::-webkit-scrollbar, #recommendations::-webkit-scrollbar {
         width: 15px;
@@ -371,6 +375,10 @@
         background-position: center;
     }
     .block_actor:hover, .block_image:hover, .block_recommendation:hover {   
+        transform: scale(1.04);
+    }
+    #block-image:hover {
+        cursor: pointer;
         transform: scale(1.04);
     }
     .block_actor img {

@@ -8,15 +8,18 @@
 
     export let title: string = "";
     export let fullName: string = "";
+    export let typeMedia: string = "";
 
-    export let displayMedia = (docId) => {};
-    export let removeMedia;
+    export let displayMedia = (docId, media = "") => {};
+    export let removeMedia = (doc_id) => {};
+    export let removeMovie = (doc_id) => {};
+    export let removeTv = (doc_id) => {};
     export let handleErrorImg = (pThis) => {};
 </script>
 
 <div class="block_image">
     <img
-        on:click={() => displayMedia(documentId)}
+        on:click={() => displayMedia(documentId, typeMedia)}
         src="https://image.tmdb.org/t/p/w500{poster_path}"
         on:error={handleErrorImg}
         alt={(title) ? `${title} - poster` : `${fullName} - poster`}
@@ -26,7 +29,13 @@
     {#if fullName}
         <p id="full-name">{fullName}</p>
     {/if}
-    <Button outline color="danger" on:click={() => removeMedia(index)}>Supprimer</Button>
+    {#if typeMedia == "movie"}
+        <Button outline color="danger" on:click={() => removeMovie(index)}>Supprimer</Button>
+    {:else if typeMedia == "tv"}
+        <Button outline color="danger" on:click={() => removeTv(index)}>Supprimer</Button>
+    {:else}
+        <Button outline color="danger" on:click={() => removeMedia(index)}>Supprimer</Button>
+    {/if}
 </div>
 
 <style>
