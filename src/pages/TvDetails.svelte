@@ -48,6 +48,8 @@
     let loadingEpisodes: boolean = true;
     let indexEpisodesSelected: number;
     let episodesSeason: {seasonNumber: number, episodes: any[]}[] = [];
+    let episodesSelectedToFilter: any[] = [];
+    let episodesFilteredToWatch: any[] = [];
 
     onMount(async() => {
         if(Number(id)) await fetchTvDetails(id);
@@ -123,14 +125,12 @@
     }
 
     const fetchAllEpisodesSeason = async(numSeason: number) => {
-        console.log(id);
         if(!displayEpisodes) {
             loadingEpisodes = true; displayEpisodes = true;
     
             const seasonNumber = Number(seasonSelected);
             if(typeof seasonNumber == "number") {
                 let indexCurrentSeason = episodesSeason.findIndex(element => element.seasonNumber === seasonNumber);
-    
                 if(indexCurrentSeason >= 0) {
                     indexEpisodesSelected = indexCurrentSeason;
                 } else {
@@ -141,6 +141,9 @@
                     });
                     indexEpisodesSelected = episodesSeason.length - 1;
                 }
+                episodesSelectedToFilter = Array.from(episodesSeason[indexEpisodesSelected].episodes);
+                episodesFilteredToWatch = [];
+                selectEpisodesToDisplay();
                 loadingEpisodes = false;
             } else {
                 loadingEpisodes = false; displayEpisodes = false; 
@@ -172,6 +175,24 @@
         } catch (error) {
             console.error(error);
         }
+    }
+
+    const selectEpisodesToDisplay = () => {
+        if(episodesSelectedToFilter.length >= 10) {
+            for(let i = 0; i < 10; i++) {
+                episodesFilteredToWatch.push(episodesSelectedToFilter[i]);
+            }
+            episodesSelectedToFilter.splice(0, 10);
+            episodesFilteredToWatch = episodesFilteredToWatch;
+        } else if(episodesSelectedToFilter.length > 0){
+            episodesFilteredToWatch = [...episodesFilteredToWatch, ...episodesSelectedToFilter];
+            episodesSelectedToFilter.splice(0, episodesSelectedToFilter.length);
+        }
+    }
+
+    const resetEpisodesSelected = () => {
+        episodesFilteredToWatch = [];
+        displayEpisodes = false;
     }
 
     const navigateToActorDetails = (id) => {
@@ -248,7 +269,7 @@
 
     {#if datas.details && datas.details.seasons && timeSeason}    
         <div id="season-select" style="width: 200px;" out:scale={{delay: 200}}>
-            <Input type="select" name="select" bind:value={seasonSelected} on:change={() => displayEpisodes = false}>
+            <Input type="select" name="select" bind:value={seasonSelected} on:change={() => resetEpisodesSelected()}>
                 {#each datas.details.seasons as season, index}    
                     <option value="{index.toString()}"> {season.name} </option>
                 {/each}
@@ -261,10 +282,12 @@
                     <div id="block-details-season">
                         <div id="title-season"> {datas.details.seasons[seasonSelected].name} </div>
                         <p id="content-details-season">
-                            {new Date(datas.details.seasons[seasonSelected].air_date).getFullYear()} | {datas.details.seasons[seasonSelected].episode_count} épisodes
+                            {(episodesFilteredToWatch.length ? new Date(episodesFilteredToWatch[0].air_date).getFullYear() : (datas.details.seasons[seasonSelected].air_date ? new Date(datas.details.seasons[seasonSelected].air_date).getFullYear() : "____"))}
+                             | 
+                            {datas.details.seasons[seasonSelected].episode_count} épisodes
                         </p>
                     </div>
-                    <p>La {(datas.details.seasons[seasonSelected].season_number) ? datas.details.seasons[seasonSelected].name : "Saison 0"} de {datas.details.name} a été diffusée à partir du {(datas.details.seasons[seasonSelected].air_date) ? moment(datas.details.seasons[seasonSelected].air_date).format("LL") : "(Aucune date)"}.</p>
+                    <p>La {(datas.details.seasons[seasonSelected].season_number) ? datas.details.seasons[seasonSelected].name : "Saison 0"} de {datas.details.name} a été diffusée à partir du {(episodesFilteredToWatch.length ? moment(episodesFilteredToWatch[0].air_date).format("LL") : (datas.details.seasons[seasonSelected].air_date ? moment(datas.details.seasons[seasonSelected].air_date).format("LL") : "(aucune date)"))}.</p>
                     <p id="overview-season">{datas.details.seasons[seasonSelected].overview}</p>
                     {#if datas.details.seasons[seasonSelected].season_number > 0}
                         <p id="display-episodes" on:click={() => fetchAllEpisodesSeason(datas.details.seasons[seasonSelected].season_number)}>Episodes <img src="/images/icon-arrow-bottom.png" alt="icon arrow bottom"></p>
@@ -274,15 +297,24 @@
             {#if displayEpisodes}                   
                 <div id="block-episodes">
                     {#if !loadingEpisodes}
-                        {#each episodesSeason[indexEpisodesSelected].episodes as episode}
+                        {#each episodesFilteredToWatch as episode}
                             <div class="card_episode">
                                 <div class="title_image_episode">
                                     <p>{episode.episode_number} - {episode.name}</p>
                                     <img src="https://image.tmdb.org/t/p/original{episode.still_path}" alt="poster episode">
                                 </div>
-                                <p>{episode.overview}</p>
+                                <div>
+                                    <i style="margin-left: 10px; font-family: 'Rye';">{episode.vote_average.toFixed(1)}/10 | {episode.runtime} min | diffusé le {(episode.air_date) ? moment(episode.air_date).format("LL") : "(aucune date)"}</i>
+                                    <p>{episode.overview}</p>
+                                </div>
                             </div>
                         {/each}
+                        {#if episodesSelectedToFilter.length > 0}
+                            <div id="display-next-episodes" on:click={selectEpisodesToDisplay}>
+                                <p>Afficher les épisodes suivants</p>
+                                <img src="/images/icon-arrow-bottom.png" alt="icon arrow bottom">
+                            </div>
+                        {/if}
                     {:else}
                         <div class="loading">
                             <Spinner 
@@ -440,6 +472,27 @@
         background-color: white;
         color: rgba(27.45%, 22.75%, 19.22%, 0.88);
     }
+    #display-next-episodes {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    #display-next-episodes p {
+        margin-bottom: unset;
+        color: white;
+        background-color: black;
+        padding: 5px;
+        border-radius: 15px;
+    }
+    #display-next-episodes img {
+        width: 40px;
+    }
+    #display-next-episodes:hover {
+        background: radial-gradient(#f9f9f980, transparent 70%);
+        cursor: pointer;
+    }
     .card_episode {
         display: flex;
         align-items: center;
@@ -460,6 +513,7 @@
 
         font-weight: 900;
         font-size: 18px;
+        width: 20%;
 
     }
     .card_episode img {
