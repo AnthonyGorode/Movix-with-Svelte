@@ -17,15 +17,15 @@
         getMediaRecommendations
     } from "../services/movieDb";
 
-    import { 
-        addMovie,
-        getMovieById,
-        deleteMovie
-    } from "../services/movieRepo";
+    import {
+        getTvById,
+        addTv,
+        deleteTv
+    } from "../services/tvRepo";
 
     import { handleErrorActorImg } from "../services/utils/handleError"
 
-    import type MovieModel from "../models/movie.model";
+    import type TvModel from "../models/tv.model";
 
     export let params;
     let { id } = params;
@@ -40,7 +40,7 @@
     let isGetDocumentId: boolean = true;
     let isFavoris: boolean = false;
 
-    let documentId: string; // document ID of movie added on firebase
+    let documentId: string; // document ID of tv added on firebase
 
     let seasonSelected: string = "0";
 
@@ -70,7 +70,7 @@
 
     const getFavorisId = async() => {
         if(datas.details) {
-            documentId = await getMovieById(datas.details.id); // check if movie added in firebase and get docId
+            documentId = await getTvById(datas.details.id); // check if tv added in firebase and get docId
             if(documentId) {
                 isFavoris = true;
             }
@@ -150,24 +150,24 @@
         }
     }
 
-    const addMovieToFavorite = async() => {
+    const addTvToFavorite = async() => {
         const { 
-            id, title, original_title, overview, tagline, poster_path, backdrop_path, release_date, budget, revenue, popularity, vote_average, vote_count
+            id, name, original_name, original_language, first_air_date, overview, tagline, poster_path, backdrop_path, number_of_seasons, number_of_episodes, popularity, vote_average, vote_count, in_production
         } = datas.details;
 
-        const movie: MovieModel = { id, title, original_title, overview, tagline, poster_path, backdrop_path, release_date, budget, revenue, popularity, vote_average, vote_count };
+        const tv: TvModel = { id, name, original_name, original_language, first_air_date, overview, tagline, poster_path, backdrop_path, number_of_seasons, number_of_episodes, popularity, vote_average, vote_count, in_production };
         
         try {
-           documentId = await addMovie(movie);
+           documentId = await addTv(tv);
            isFavoris = true;
         } catch (error) {
             console.error(error);
         }
     }
 
-    const deleteMovieToFavorite = async(doc_id: string) => {
+    const deleteTvToFavorite = async(doc_id: string) => {
         try {
-            await deleteMovie(doc_id);
+            await deleteTv(doc_id);
             isFavoris = false;
         } catch (error) {
             console.error(error);
@@ -176,7 +176,7 @@
 
     const navigateToActorDetails = (id) => {
         localStorage.setItem("previous_page", "tv-details");
-        localStorage.setItem("movie_id", datas.details.id);
+        localStorage.setItem("media_id", datas.details.id);
         navigate(`/actor-details/${id}`, { replace: true });
     }
 </script>
@@ -184,7 +184,7 @@
 {#if datas}
     {#if datas.details}
         <div 
-            id="block-film-details"
+            id="block-tv-details"
             style="
                 background: linear-gradient(rgba(27.45%, 22.75%, 19.22%, 0.88), rgba(27.45%, 22.75%, 19.22%, 0.88), rgba(27.45%, 22.75%, 19.22%, 0.88)), url(https://image.tmdb.org/t/p/original{datas.details.backdrop_path}) no-repeat;
                 background-size: cover;
@@ -192,9 +192,9 @@
                 in:slide
                 out:scale={{delay: 200}}  
         >
-            <div style="display: flex;justify-content: center;width: 70%;color: white;margin-top:2%;">
+            <div style="display: flex;justify-content: center;width: 70%;color: white;margin:2%;">
                 <div id="block-image">
-                    <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster film">
+                    <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster tv">
                 </div>
                 <div id="block-details">
                     <h2 id="title-details">
@@ -215,8 +215,8 @@
                             <FavoriteButton 
                                 documentId={documentId}
                                 isFavorite={isFavoris}
-                                deleteMediaToFavorite={deleteMovieToFavorite}
-                                addMediaToFavorite={addMovieToFavorite}
+                                deleteMediaToFavorite={deleteTvToFavorite}
+                                addMediaToFavorite={addTvToFavorite}
                             />
                         {:else}
                             <div class="loading">
@@ -297,7 +297,7 @@
         </div>
     {/if}
 
-    <div class="movie_details" out:scale={{delay: 200}}>
+    <div class="tv_details" out:scale={{delay: 200}}>
         <h2 class="title_block">Casting</h2>
         <div id="actors" class={(!timeActors) ? "loading_datas" : ""}>
             {#if datas.actors && timeActors}   
@@ -509,12 +509,20 @@
     #overview-season {
         padding: 10px;
     }
-    .movie_details h2{
+    .tv_details h2{
         padding-left: 20px;
     }
-    #block-film-details {
+    #block-tv-details {
+        display: flex;
+        justify-content: center;
         height: auto;
         box-shadow: -3px 3px 2px 1px rgb(0 0 0 / 20%);
+    }
+    #block-tv-details img {
+        width: 300px;
+        height: 450px;
+        box-shadow: -12px -12px 2px 1px rgba(0, 0, 0, 0.2);
+        /* box-shadow: 12px 12px 2px 1px rgba(0, 0, 0, 0.2); */
     }
     #title-details {
         text-shadow: 0 0 4px white, 0 -5px 4px #ffff33, 2px -10px 6px #ffdd33, -2px -15px 11px #ff8800, 2px -25px 18px #ff2200;

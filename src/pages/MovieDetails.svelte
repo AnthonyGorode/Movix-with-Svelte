@@ -143,7 +143,7 @@
                 in:slide
                 out:scale={{delay: 200}}  
         >
-            <div style="display: flex;justify-content: center;width: 70%;color: white;margin-top:2%;">
+            <div style="display: flex;justify-content: center;width: 70%;color: white;margin:2%;">
                 <div id="block-image">
                     <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster film">
                 </div>

@@ -116,7 +116,7 @@
 
     const returnPreviousPage = () => {
         const page = localStorage.getItem("previous_page");
-        const id = localStorage.getItem("movie_id");
+        const id = localStorage.getItem("media_id");
 
         localStorage.clear();
         navigate(`/${page}/${id}`, { replace: true });
