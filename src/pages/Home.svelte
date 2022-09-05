@@ -6,6 +6,7 @@
     import Spinner from "../components/Spinner.svelte";
     import Movie from "../components/Movie.svelte";
     import MovieDescription from "../components/MovieDescription.svelte";
+    import SelectorMedia from "../components/SelectorMedia.svelte";
 
     import {
         getMediaDiscover,
@@ -13,97 +14,101 @@
         getMediaTrending
     } from "../services/movieDb";
 
-    let datas: {[key:string]: {movie: any[], tv: any[]}} = { 
-        discover: {
-            movie: null,
-            tv: null
-        },
-        marvel: {
-            movie: null,
-            tv: null
-        },
-        trending: {
-            movie: null,
-            tv: null
-        } 
-    };
+    let loadingDatas: boolean = false;
+
+    let datasDiscover: {movie: any[], tv: any[]} = {movie: [], tv: []};
+    let datasMarvel: {movie: any[], tv: any[]} = {movie: [], tv: []};
+    let datasTrending: {movie: any[], tv: any[]} = {movie: [], tv: []};
+
     let keyMediaDiscover: string = "movie";
     let keyMediaMarvel: string = "movie";
     let keyMediaTrending: string = "movie";
     let firstMovie;
 
-    let time: {[key: string]: boolean} = {
-        discover: false,
-        marvel: false,
-        trending: false
-    }
+    let timeDiscover: boolean = false;
+    let timeMarvel: boolean = false;
+    let timeTrending: boolean = false;
 
     onMount(async() => {
         await fetchMovies();
-
-        console.log(datas);
-        datas = datas;
 	});
 
     const fetchMovies = async() => {
-        datas.discover.movie = await getMediaDiscover("movie");
-        datas.marvel.movie = await getMediaMarvel("movie");
-        datas.trending.movie = await getMediaTrending("movie");
-        
-        datas.trending.movie.sort((a,b) => b.vote_average - a.vote_average);
+        try {
+            datasDiscover.movie = await getMediaDiscover("movie");
+            datasMarvel.movie = await getMediaMarvel("movie");
+            datasTrending.movie = await getMediaTrending("movie");
+            
+            datasTrending.movie.sort((a,b) => b.vote_average - a.vote_average);
 
-        setTimeout(async() => time.discover = true, 1000);
-        setTimeout(async() => firstMovie = datas.discover.movie.find(movie => movie.id == "616037"), 2000);
-        setTimeout(async() => time.marvel = true, 3000);
-        setTimeout(async() => time.trending = true, 6000);
+            loadingDatas = true;
+
+            setTimeout(async() => timeDiscover = true, 1000);
+            setTimeout(async() => firstMovie = datasDiscover.movie.find(movie => movie.id == "616037"), 2000);
+            setTimeout(async() => timeMarvel = true, 3000);
+            setTimeout(async() => timeTrending = true, 6000);
+        } catch (error) {
+            loadingDatas = true;
+            console.error(error);
+        }
     }
 
     const switchMedia = async(type: string, media: "movie" | "tv") => {
-        time[type] = false;
+        console.log(type, media);
         switch(type) {
             case "discover":
-                if(!datas[type][media]) {
-                    datas[type][media] = await getMediaDiscover(media);
+                timeDiscover = false;
+                if(!datasDiscover[media].length) {
+                    datasDiscover[media] = await getMediaDiscover(media);
+                    console.log(datasDiscover);
                     // datas[type][media].sort((a,b) => b.vote_average - a.vote_average);
                 }
                 keyMediaDiscover = media;
+                setTimeout(() => {
+                    datasDiscover[media] = datasDiscover[media];
+                    timeDiscover = true;
+                },1800);
                 break;
 
             case "marvel":
-                if(datas[type][media]) {
-                    datas[type][media] = await getMediaMarvel("tv");
+                timeMarvel = false;
+                if(!datasMarvel[media].length) {
+                    datasMarvel[media] = await getMediaMarvel(media);
                 }
                 keyMediaMarvel = media;
+                setTimeout(() => {
+                    datasMarvel[media] = datasMarvel[media];
+                    timeMarvel = true;
+                },1800);
                 break;
 
             case "trending":
-                if(datas[type][media]) {
-                    datas[type][media] = await getMediaTrending("tv");
+                timeTrending = false;
+                if(!datasTrending[media].length) {
+                    datasTrending[media] = await getMediaTrending(media);
                 }
                 keyMediaTrending = media;
+                
+                setTimeout(() => {
+                    datasTrending[media] = datasTrending[media];
+                    timeTrending = true;
+                },1800);
                 break;
         }
-        setTimeout(() => {
-            datas[type][media] = datas[type][media];
-            time[type] = true;
-        },1800);
     }
 
 </script>
-{#if datas}
+{#if loadingDatas}
     {#if firstMovie}    
         <MovieDescription movie={firstMovie} />
     {/if}
-    <div class="title_container">
+    <div class="title_container" out:scale={{delay: 200}}>
         <h2 class="title_block" style="margin-top: 20px;"> À découvrir </h2>
-        <div class="selector">
-            <h3 class="{keyMediaDiscover == 'movie' ? 'switch_active' : '' }" on:click={() => switchMedia("discover", "movie")}>Films</h3>
-            <h3 class="{keyMediaDiscover == 'tv' ? 'switch_active' : '' }" on:click={() => switchMedia("discover", "tv")}>Séries</h3>
-        </div>
+        <SelectorMedia keyMedia={keyMediaDiscover} typeMedia="discover" switchMedia={switchMedia} />
     </div>
     <div id="discover" out:scale={{delay: 200}}>
-    {#if datas.discover && time.discover}
-        {#each datas.discover[keyMediaDiscover] as {poster_path, id, title}, index ({poster_path, id, title})}
+    {#if datasDiscover[keyMediaDiscover] && timeDiscover}
+        {#each datasDiscover[keyMediaDiscover] as {poster_path, id, title}, index ({poster_path, id, title})}
             <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>
                 <Movie poster_path={poster_path} id={id} media={keyMediaDiscover} title={title} />
             </div>    
@@ -124,10 +129,13 @@
 
     <hr>
 
-    <h2 class="title_block">Best Marvel</h2>
+    <div class="title_container" out:scale={{delay: 200}}>
+        <h2 class="title_block">Best Marvel</h2>
+        <SelectorMedia keyMedia={keyMediaMarvel} typeMedia="marvel" switchMedia={switchMedia} />
+    </div>
     <div id="marvel" out:scale={{delay: 200}}>
-    {#if datas.marvel && time.marvel}    
-        {#each datas.marvel[keyMediaMarvel] as {poster_path, id, title}, index ({poster_path, id, title})}
+    {#if datasMarvel[keyMediaMarvel] && timeMarvel}    
+        {#each datasMarvel[keyMediaMarvel] as {poster_path, id, title}, index ({poster_path, id, title})}
             <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>   
                 <Movie poster_path={poster_path} id={id} media={keyMediaMarvel} title={title} />
             </div>
@@ -148,10 +156,13 @@
 
     <hr>
 
-    <h2 class="title_block">Tendances</h2>
+    <div class="title_container" out:scale={{delay: 200}}>
+        <h2 class="title_block">Tendances</h2>
+        <SelectorMedia keyMedia={keyMediaTrending} typeMedia="trending" switchMedia={switchMedia} />
+    </div>
     <div id="trending" out:scale={{delay: 200}}>
-    {#if datas.trending && time.trending}   
-        {#each datas.trending[keyMediaTrending] as {poster_path, id, title}, index ({poster_path, id, title})}
+    {#if datasTrending[keyMediaTrending] && timeTrending}   
+        {#each datasTrending[keyMediaTrending] as {poster_path, id, title}, index ({poster_path, id, title})}
             <div class="child_component_block" transition:fly={{ y: -60 }} animate:flip={{ delay:150, duration:500 }}>   
                 <Movie poster_path={poster_path} id={id} media={keyMediaTrending} title={title} />
             </div>
@@ -223,26 +234,6 @@
         justify-content: flex-start;
         align-items: center;
         align-content: center;
-    }
-    .selector {
-        display: flex;
-        justify-content: flex-start;
-        align-items: stretch;
-        align-content: center;
-        border: 1px solid rgba(3,37,65, 1);
-        border-radius: 30px;
-        margin-left: 20px;
-    }
-    .selector h3 {
-        padding: 4px 20px;
-        margin-bottom: unset;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    .switch_active {
-        background-color: rgba(27.45%, 22.75%, 19.22%, 0.88);
-        border-radius: 30px;
-        color: white;
     }
     #discover, #marvel, #trending {
         display: flex;

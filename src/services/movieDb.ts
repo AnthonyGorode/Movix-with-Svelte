@@ -32,6 +32,11 @@ const getMediaTrending = async(media: media) => {
     return fetchMedia(`/trending/${media}/week?api_key=${apiKey}&language=fr-FR`, "results");
 }
 
+// https://api.themoviedb.org/3/tv/popular?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR&page=1&with_genres=16&with_original_language=ja
+const getMediaAnimes = async(media: media) => {
+    return fetchMedia(`/${media}/popular?api_key=${apiKey}&page=1&with_genres=16&with_original_language=ja&language=fr-FR`, "results");
+}
+
 const getMoviesDC = async() => {
     return fetchMedia(`/movie/popular?api_key=${apiKey}&language=fr&with_companies=9993`, "results");
 }
@@ -43,7 +48,7 @@ const getMovieScifi = async() => {
 const getMovieDrama = async() => {
     return fetchMedia(`/discover/movie?with_genres=18&primary_release_year=2020&api_key=${apiKey}&adult=false&language=fr-FR`, "results");
 }
-// https://api.themoviedb.org/3/tv/92783?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR
+// https://api.themoviedb.org/3/tv/37854?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR
 const getMediaDetails = async(idMedia: number, media: media) => {
     return fetchMedia(`${media}/${idMedia}?api_key=${apiKey}&language=fr`, "data");
 }
