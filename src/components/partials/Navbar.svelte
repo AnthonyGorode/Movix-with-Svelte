@@ -28,7 +28,7 @@
         <Nav navbar>
           <NavItem>
               <NavLink>
-                <a href="/home" class={($location.pathname == "/home") ? "focus" : "page"} use:link>Accueil</a>
+                <a href="/home" class={($location.pathname == "/home" || $location.pathname == "/" ) ? "focus" : "page"} use:link>Accueil</a>
               </NavLink>
           </NavItem>
           <NavItem>

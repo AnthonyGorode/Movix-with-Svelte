@@ -14,10 +14,10 @@
   export let url = ""; //This property is necessary declare to avoid ignore the Router
 </script>
 
-<Router url="{url}">
+<Router url="{url}" primary={false}>
   <Navbar />
-   <div id="app-block">   
-    <Route path="/"> <Lazy component="{Home}" /></Route>
+   <div id="app-block">
+    <Route> <Lazy component="{Home}" /></Route>
     <Route path="home"> <Lazy component="{Home}" /> </Route>
      <Route path="movie-details/:id" let:params>
       <Lazy component={MovieDetails} {params} />

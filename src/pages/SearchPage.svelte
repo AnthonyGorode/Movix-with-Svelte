@@ -2,11 +2,10 @@
     import { onMount } from "svelte";
 	import { fly, scale } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
-    import { FormGroup, Input } from "sveltestrap";
+    import { Input } from "sveltestrap";
     
     import Spinner from "../components/Spinner.svelte";
     import Movie from "../components/Movie.svelte";
-    import MovieDescription from "../components/MovieDescription.svelte";
     
     import { getMediaByQuery } from "../services/movieDb";
 
@@ -61,13 +60,7 @@
 
 {#if loadingDatas}     
     <div class="loading">
-        <Spinner 
-            widthSpin={100} 
-            heightSpin={100}
-            borderSpin={16}
-            borderTopSpin={16}
-            borderRadiusSpin={100}
-        />
+        <img src="/images/loading_new.gif" alt="loading gif" >
     </div>
 {:else}
 

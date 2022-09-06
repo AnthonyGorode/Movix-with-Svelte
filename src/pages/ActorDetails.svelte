@@ -178,13 +178,7 @@
     </div>
 {:else}
     <div class="main_spinner">
-        <Spinner 
-            widthSpin={100} 
-            heightSpin={100}
-            borderSpin={16}
-            borderTopSpin={16}
-            borderRadiusSpin={100}
-        />
+        <img src="/images/loading_new.gif" alt="loading gif" >
     </div>
 {/if}
 
