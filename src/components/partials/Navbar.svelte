@@ -17,23 +17,30 @@
       isOpen = event.detail.isOpen;
     }
   </script>
+  <div id="navbar">
+    <Navbar color="dark" dark expand="md">
+      <NavbarBrand href="/">Movix</NavbarBrand>
+      <NavbarToggler on:click={() => (isOpen = !isOpen)} />
+      <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
+        <Nav navbar>
+          <NavItem>
+              <NavLink>
+                <Link to="/home" class="page">Accueil</Link>
+              </NavLink>
+          </NavItem>
+          <NavItem>
+              <NavLink>
+                  <Link to="/favorites" class="page">Favoris</Link>
+              </NavLink>
+          </NavItem>
+        </Nav>
+      </Collapse>
+    </Navbar>
+  </div>
   
-  <Navbar color="dark" dark expand="md">
-    <NavbarBrand href="/">Movix</NavbarBrand>
-    <NavbarToggler on:click={() => (isOpen = !isOpen)} />
-    <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
-      <Nav navbar>
-        <NavItem>
-            <NavLink>
-              <Link to="/home" class="page">Accueil</Link>
-            </NavLink>
-        </NavItem>
-        <NavItem>
-            <NavLink>
-                <Link to="/favorites" class="page">Favoris</Link>
-            </NavLink>
-        </NavItem>
-      </Nav>
-    </Collapse>
-  </Navbar>
-  
+<style>
+  #navbar:global(a):hover {
+    color: white;
+    font-family: 'Bungee Inline';
+  }
+</style>
