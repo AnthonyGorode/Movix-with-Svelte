@@ -19,7 +19,7 @@
         width: 300px;
         height: 360px;
         border-radius: 10px;
-
+        transform-origin: bottom right 40px;
         background-size: cover;
         background-position: center;
         transition: all 0.5s ease;
@@ -33,8 +33,9 @@
     <Link to="/{media}-details/{id}">
         <!-- <div class="block_transparent"></div> -->
         <img 
-            src="https://image.tmdb.org/t/p/w500{poster_path}"
+            src={(poster_path) ? "https://image.tmdb.org/t/p/w500"+poster_path : "/images/no-media.jpg"}
             alt="{title} - poster"
+            title="{title}"
             loading="lazy"
             in:slide
         >  

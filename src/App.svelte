@@ -9,6 +9,7 @@
   const ActorDetails = () => import("./pages/ActorDetails.svelte");
   const tvDetails = () => import("./pages/TvDetails.svelte");
   const Favorite = () => import("./pages/Favorite.svelte");
+  const SearchPage = () => import("./pages/SearchPage.svelte");
 
   export let url = ""; //This property is necessary declare to avoid ignore the Router
 </script>
@@ -28,5 +29,6 @@
       <Lazy component={tvDetails} {params} />
     </Route>
     <Route path="favorites"> <Lazy component="{Favorite}" /> </Route>
+    <Route path="search"> <Lazy component="{SearchPage}" /> </Route>
    </div>
 </Router>

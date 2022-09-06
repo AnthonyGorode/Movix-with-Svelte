@@ -90,6 +90,11 @@ const getAllMediaActor = async(idActor: number, media: media) => {
     return fetchMedia(`https://api.themoviedb.org/3/person/${idActor}/tv_credits?api_key=${apiKey}&language=fr`, "data");
 }
 
+// https://api.themoviedb.org/3/search/tv?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR&query=one%20piece&page=1&include_adult=false
+const getMediaByQuery = async(query: string, media: media) => {
+    return fetchMedia(`/search/${media}?api_key=${apiKey}&query=${query}&page=1&include_adult=false&language=fr-FR`, "results");
+}
+
 export {
     getMediaDiscover,
     getMediaMarvel,
@@ -105,5 +110,6 @@ export {
     getMediaVideos,
     getMediaRecommendations,
     getActorDetails,
-    getAllMediaActor
+    getAllMediaActor,
+    getMediaByQuery
 };
