@@ -52,8 +52,46 @@
         box-shadow: -3px 3px 2px 1px rgb(0 0 0 / 20%);
     }
     #block-film-first:hover {
-        transform: scale(1.01);
+        animation-duration: 1s;
+        animation-timing-function:cubic-bezier(0.075, 0.82, 0.165, 1);
+        animation-delay: 0s;
+        animation-iteration-count: 1;
+        animation-direction: normal;
+        animation-fill-mode: both;
+        animation-play-state: running;
+        animation-name: animateDescriptionIn;
     }
+    #block-film-first:not(:hover) {
+        animation-duration: 1s;
+        animation-timing-function:cubic-bezier(0.075, 0.82, 0.165, 1);
+        animation-delay: 0s;
+        animation-iteration-count: 1;
+        animation-direction: normal;
+        animation-fill-mode: both;
+        animation-play-state: running;
+        animation-name: animateDescriptionOut;
+    }
+    @keyframes animateDescriptionIn {
+        0% {
+            transform: scale(1.01);
+            transform-origin: bottom right 40px;
+        }
+        100% {
+            transform: scale(1.02);
+            transform-origin: bottom right 60px;
+        }
+    }
+    @keyframes animateDescriptionOut {
+        0% {
+            transform: scale(1.02);
+            transform-origin: bottom right 60px;
+        }
+        100% {
+            transform: scale(1.01);
+            transform-origin: bottom right 40px;
+        }
+    }
+
     #block-details {
         background: linear-gradient(rgba(27.45%, 22.75%, 19.22%, 0.60), rgba(27.45%, 22.75%, 19.22%, 0.60), rgba(27.45%, 22.75%, 19.22%, 0.60));
         padding: 30px;

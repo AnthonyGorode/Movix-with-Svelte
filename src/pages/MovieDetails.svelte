@@ -376,10 +376,15 @@
     }
     .block_actor:hover, .block_image:hover, .block_recommendation:hover {   
         transform: scale(1.04);
+        transform-origin: bottom right 40px;
+    }
+    #block-image {
+        cursor: pointer;     
+        transition: all 0.5s ease;
     }
     #block-image:hover {
-        cursor: pointer;
         transform: scale(1.04);
+        transform-origin: bottom right 40px;
     }
     .block_actor img {
         border-radius: 10px;

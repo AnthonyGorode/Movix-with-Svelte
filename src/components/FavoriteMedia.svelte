@@ -54,6 +54,7 @@
         background-size: cover;
         background-position: center;
         transition: all 0.5s ease;
+        transform-origin: bottom right 40px;
     }
     img:hover {
         transform: scale(1.04);
