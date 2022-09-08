@@ -45,14 +45,15 @@
         disabled={
         (!signInValues.lastname || !signInValues.firstname || !signInValues.email || !signInValues.password || !signInValues.isSamePassword &&  signInValues.password || signInValues.isSamePassword && signInValues.password != signInValues.isSamePassword) ? true : false
         }>Sinscrire</button>
-    {/if}
-    {#if errorMessage}
-        <Alert color="danger" fade={false} dismissible>
-            {errorMessage}
-        </Alert>
-    {/if}
+        
+        {#if errorMessage}
+            <Alert color="danger" fade={false} dismissible>
+                {errorMessage}
+            </Alert>
+        {/if}
 
-    <p on:click={switchForm}><img class="return_logo" src="/images/arrow-left.png" alt="return sign In"> Retour</p>
+        <p on:click={switchForm}><img class="return_logo" src="/images/arrow-left.png" alt="return sign In"> Retour</p>
+    {/if}
 </form>
 
 <style>

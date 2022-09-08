@@ -35,14 +35,15 @@
         disabled={
         (!signInValues.email || !signInValues.password) ? true : false
         }>Se Connecter</button>
-    {/if}
-    {#if errorMessage}
-    <Alert color="danger" fade={false} dismissible>
-        {errorMessage}
-    </Alert>
-    {/if}
+        
+        {#if errorMessage}
+        <Alert color="danger" fade={false} dismissible>
+            {errorMessage}
+        </Alert>
+        {/if}
 
-    <p on:click={switchForm}>Pas Encore inscrit ?</p>
+        <p on:click={switchForm}>Pas Encore inscrit ?</p>
+    {/if}
 </form>
 
 <style>
