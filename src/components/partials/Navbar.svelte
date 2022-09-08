@@ -98,7 +98,7 @@
         {:else}       
           <NavItem>
             <NavLink>
-                <a href="/sign-page" class={($location.pathname == "/sign-page") ? "focus" : "page"} use:link>Connexion</a>
+                <a href="/login-page" class={($location.pathname == "/login-page") ? "focus" : "page"} use:link>Connexion</a>
             </NavLink>
           </NavItem>
         {/if}

@@ -1,5 +1,6 @@
 <script>
   import { Router, Route } from "svelte-navigator";
+import AuthGuard from "./AuthGuard.svelte";
   
   import Navbar from "./components/partials/Navbar.svelte";
   import Lazy from "./Lazy.svelte";
@@ -11,6 +12,7 @@
   const Favorite = () => import("./pages/Favorite.svelte");
   const SearchPage = () => import("./pages/SearchPage.svelte");
   const SignPage = () => import("./pages/SignPage.svelte");
+  const OwnFavorite = () => import("./pages/OwnFavorite.svelte");
 
   export let url = ""; //This property is necessary declare to avoid ignore the Router
 </script>
@@ -31,6 +33,11 @@
     </Route>
     <Route path="favorites"> <Lazy component="{Favorite}" /> </Route>
     <Route path="search"> <Lazy component="{SearchPage}" /> </Route>
-    <Route path="sign-page"> <Lazy component="{SignPage}" /> </Route>
+    <Route path="login-page"> <Lazy component="{SignPage}" /> </Route>
+    <Route path="own-favorites">
+      <AuthGuard>
+        <Lazy component="{OwnFavorite}" />
+      </AuthGuard>
+    </Route>
    </div>
 </Router>
