@@ -6,15 +6,47 @@
       NavbarBrand,
       Nav,
       NavItem,
-      NavLink
+      NavLink,
+      Dropdown,
+      DropdownItem,
+      DropdownToggle,
+      DropdownMenu
     } from 'sveltestrap';
 
+    import { onMount } from "svelte"; 
     import { link, useLocation } from "svelte-navigator";
+    import { onAuthStateChanged } from 'firebase/auth';
+
+    import { auth } from "../../../firebase";
+    import { authStore } from "../../hooks/auth.hook";
+    import { logOut } from '../../services/auth';
 
     const location = useLocation();
-    let path: string;
 
     let isOpen = false;
+
+    $: console.log($authStore);
+
+    onMount(() => {
+      onAuthStateChanged(auth,
+        user => {
+          authStore.set(user);
+        },
+        error => {
+          authStore.set({});
+          console.error(error);
+        }
+      );
+    });
+
+    const signOutUser = async() => {
+      try {
+        await logOut();
+          authStore.set({});
+      } catch (error) {
+        console.error(error);
+      }
+    }
   
     function handleUpdate(event) {
       isOpen = event.detail.isOpen;
@@ -31,11 +63,19 @@
                 <a href="/home" class={($location.pathname == "/home" || $location.pathname == "/" ) ? "focus" : "page"} use:link>Accueil</a>
               </NavLink>
           </NavItem>
-          <NavItem>
+          {#if $authStore && typeof $authStore == "object" && $authStore.hasOwnProperty("uid")}
+            <NavItem>
+                <NavLink>
+                    <a href="/own-favorites" class={($location.pathname == "/own-favorites") ? "focus" : "page"} use:link>Mes Favoris</a>
+                </NavLink>
+            </NavItem>
+          {:else}
+            <NavItem>
               <NavLink>
-                  <a href="/favorites" class={($location.pathname == "/favorites") ? "focus" : "page"} use:link>Favoris</a>
+                <a href="/favorites" class={($location.pathname == "/favorites") ? "focus" : "page"} use:link>Favoris</a>
               </NavLink>
-          </NavItem>
+            </NavItem>
+          {/if}
         </Nav>
         <Nav class="ms-auto">
           <NavItem>
@@ -43,12 +83,41 @@
                 <a href="/search" class="search" use:link><img src="/images/logo-search.png" alt="search logo" title="Rechercher"></a>
             </NavLink>
         </NavItem>
+
+        {#if $authStore && typeof $authStore == "object" && $authStore.hasOwnProperty("uid")}
+          <div id="dropdown-account">
+            <Dropdown nav {isOpen} toggle={() => (isOpen = !isOpen)}>
+              <DropdownToggle nav caret>Mon Compte</DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem>Compte</DropdownItem>
+                <DropdownItem divider />
+                <DropdownItem on:click={signOutUser}><img class="logout_logo" src="/images/logout_user_account.webp" alt="logout"> Deconnexion</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+        {:else}       
+          <NavItem>
+            <NavLink>
+                <a href="/sign-page" class={($location.pathname == "/sign-page") ? "focus" : "page"} use:link>Connexion</a>
+            </NavLink>
+          </NavItem>
+        {/if}
         </Nav>
       </Collapse>
     </Navbar>
   </div>
   
 <style>
+  #dropdown-account :global(a) {
+    color: white;
+    text-decoration: none;
+  }
+  #dropdown-account :global(div.dropdown-menu) {
+    left: -50px;
+  }
+  #dropdown-account :global(button.dropdown-item) {
+    text-align: center;
+  }
   #title-app {
     display: flex;
     align-items: center;
@@ -146,5 +215,9 @@
     100% {
       transform: rotate(360deg);
     }
+  }
+
+  .logout_logo {
+    width: 20px;
   }
 </style>

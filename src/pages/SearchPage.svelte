@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
 	import { fly, scale } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
     import { Input } from "sveltestrap";
