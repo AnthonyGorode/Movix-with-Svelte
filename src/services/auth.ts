@@ -22,7 +22,6 @@ const signUp = async(lastName: string, firstName: string, email: string, passwor
 
         await createUser(lastName, firstName, email);
 
-        console.log("User Created => ",user);
         return user;
     } catch (error) {
         throw Error("Une erreur c'est produite => ", error);

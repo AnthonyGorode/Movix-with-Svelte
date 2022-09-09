@@ -57,7 +57,7 @@
 
         let valuesIsNotEmpty: boolean = (signInValues.lastname && signInValues.firstname && signInValues.email && signInValues.password) ? true : false;
         let passwordIsTheSame: boolean = (signInValues.password == signInValues.isSamePassword) ? true : false;
-            console.log(signInValues);
+
 
         if(valuesIsNotEmpty && passwordIsTheSame) {
             try {

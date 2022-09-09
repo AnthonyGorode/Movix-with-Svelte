@@ -63,7 +63,6 @@
         initTvDetails();
         await getFavorisId();
         
-        console.log(datas);
         datas = datas;
 	});
 

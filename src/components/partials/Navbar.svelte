@@ -25,14 +25,12 @@
 
     let isOpen = false;
 
-    $: console.log($authStore);
-
     onMount(() => {
       onAuthStateChanged(auth,
         (user) => {
           if(user) {
             const { uid, displayName, email, metadata } = user;
-            console.log(user);
+
             authStore.set({uid, displayName, email, data: {metadata}});
           }
         },

@@ -51,7 +51,6 @@
         initMovieDetails();
         await getFavorisId();
         
-        console.log(datas);
         datas = datas;
 	});
 

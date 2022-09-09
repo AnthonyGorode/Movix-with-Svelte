@@ -40,7 +40,7 @@
 
     onMount(async() => {
         uid = $authStore.uid;
-        console.log(uid);
+
         initFavoriteComponent();
     });
 
@@ -136,7 +136,7 @@
 
     const removeActorToFavorite = async(index: number) => {
         const documentId = favoritesActors[index].documentId;
-        console.log("HEY")
+
         await deleteActor(documentId, uid);
 
         favoritesActors.splice(index, 1);
