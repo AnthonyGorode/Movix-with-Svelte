@@ -87,6 +87,17 @@
         <Nav class="ms-auto">
           <NavItem>
             <NavLink>
+                <a 
+                  href="https://github.com/AnthonyGorode/Movix-with-Svelte" 
+                  class="github page" 
+                  title="Lien Github"
+                  target="popup" on:click={() => window.open('https://github.com/AnthonyGorode/Movix-with-Svelte','Github')}
+                >Github</a>
+            </NavLink>
+        </NavItem>
+
+          <NavItem>
+            <NavLink>
                 <a href="/search" class="search" use:link><img src="/images/logo-search.png" alt="search logo" title="Rechercher"></a>
             </NavLink>
         </NavItem>
@@ -196,7 +207,7 @@
     }
   }
 
-  .search {
+  .search, .github {
     padding: unset;
     text-decoration: none;
     color: white;

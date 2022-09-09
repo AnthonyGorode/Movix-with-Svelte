@@ -233,8 +233,8 @@
                         {datas.details.name}
                     </h2>
 
-                    {#if providerLink}
-                        <a href={providerLink["FR"].link} id="watch-providers"  target="_blank">
+                    {#if providerLink && providerLink.hasOwnProperty("FR")}
+                        <a href={providerLink["FR"]?.link} id="watch-providers"  target="_blank">
                             <img src="/images/justwatch.svg" alt="Just Watch">
                             <p>Disponible en Streaming</p>
                         </a>
@@ -580,12 +580,7 @@
     }
     
     #block-image {
-        cursor: pointer;     
-        transition: all 0.5s ease;
-    }
-    #block-image:hover {
-        transform: scale(1.04);
-        transform-origin: bottom right 40px;
+        cursor: pointer;
     }
     #block-tv-details {
         display: flex;
@@ -597,7 +592,13 @@
         width: 300px;
         height: 450px;
         box-shadow: -12px -12px 2px 1px rgba(0, 0, 0, 0.2);
-        /* box-shadow: 12px 12px 2px 1px rgba(0, 0, 0, 0.2); */
+        
+        transition: all 0.5s ease;
+    }
+    #block-tv-details img:hover {
+        transform: scale(1.04);
+        transform-origin: bottom right 40px;
+        box-shadow: 12px 12px 2px 1px rgb(0 0 0 / 20%);
     }
     #title-details {
         text-shadow: 0 0 4px white, 0 -5px 4px #ffff33, 2px -10px 6px #ffdd33, -2px -15px 11px #ff8800, 2px -25px 18px #ff2200;
@@ -616,7 +617,7 @@
         transition: all 0.5s ease;
     }
     #watch-providers:hover {
-        transform: scale(1.04);
+        transform: scale(1.1);
         transform-origin: bottom right 40px;
     }
     #watch-providers img {

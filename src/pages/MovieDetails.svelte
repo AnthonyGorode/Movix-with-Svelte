@@ -36,7 +36,7 @@
         timeImages: boolean = false, 
         timeRecommendations: boolean = false;
 
-    let providerLink: string;
+    let providerLink = {};
 
     let isGetDocumentId: boolean = false;
     let isFavoris: boolean = false;
@@ -86,6 +86,7 @@
         datas.recommendations.sort((a,b) => b.vote_count - a.vote_count);
 
         providerLink = await getWatchProviders(datas.details.id, "movie");
+        console.log(providerLink);
     }
 
     const fetchMovieFromRecommendations = async(idMovie: number) => {
@@ -163,8 +164,8 @@
                     <h2 id="title-details">
                         {datas.details.title}
                     </h2>
-                    {#if providerLink}
-                        <a href={providerLink["FR"].link} id="watch-providers"  target="_blank">
+                    {#if providerLink && providerLink.hasOwnProperty("FR")}
+                        <a href={providerLink["FR"]?.link} id="watch-providers"  target="_blank">
                             <img src="/images/justwatch.svg" alt="Just Watch">
                             <p>Disponible en Streaming</p>
                         </a>
@@ -355,7 +356,7 @@
         transition: all 0.5s ease;
     }
     #watch-providers:hover {
-        transform: scale(1.04);
+        transform: scale(1.1);
         transform-origin: bottom right 40px;
     }
     #watch-providers img {
@@ -414,13 +415,18 @@
         transform: scale(1.04);
         transform-origin: bottom right 40px;
     }
-    #block-image {
-        cursor: pointer;     
+    #block-image img {
+        width: 300px;
+        height: 450px;
+        box-shadow: -12px -12px 2px 1px rgba(0, 0, 0, 0.2);
+        cursor: pointer;  
+        
         transition: all 0.5s ease;
     }
-    #block-image:hover {
+    #block-image img:hover {
         transform: scale(1.04);
         transform-origin: bottom right 40px;
+        box-shadow: 12px 12px 2px 1px rgb(0 0 0 / 20%);
     }
     .block_actor img {
         border-radius: 10px;

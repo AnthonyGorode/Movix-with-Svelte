@@ -146,11 +146,10 @@
     const switchMedia = async(media: "movie" | "tv", type: string = "") => {
         timeMedia = false;
         keyMediaFavorite = media;
+        mediaDisplayed = null;
         setTimeout(() => {
             if(favoritesDatas[media].length) {
                 mediaDisplayed = favoritesDatas[media][0][media];
-            } else {
-                mediaDisplayed = null;
             }
             timeMedia = true;
         },1800);
