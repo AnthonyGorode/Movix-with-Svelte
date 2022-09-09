@@ -53,6 +53,10 @@ const getMediaDetails = async(idMedia: number, media: media) => {
     return fetchMedia(`${media}/${idMedia}?api_key=${apiKey}&language=fr`, "data");
 }
 
+const getWatchProviders = async(idMedia: number, media: media) => {
+    return fetchMedia(`${media}/${idMedia}/watch/providers?api_key=${apiKey}`, "results");
+}
+
 // https://api.themoviedb.org/3/tv/92783/season/1?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR
 const getSeasonDetails = async(idTv: number, numSeason: number) => {
     return fetchMedia(`tv/${idTv}/season/${numSeason}?api_key=${apiKey}&language=fr`, "data");
@@ -104,6 +108,7 @@ export {
     getMovieScifi,
     getMovieDrama,
     getMediaDetails,
+    getWatchProviders,
     getSeasonDetails,
     getMediaActors,
     getMediaImages,

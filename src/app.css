@@ -139,6 +139,7 @@ h1{
 }
 #block-details {
   margin: 0 2rem 0 2rem;
+  position: relative;
 }
 #content-details {
   font-family: 'Black Ops One', cursive;

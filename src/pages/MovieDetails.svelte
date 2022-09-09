@@ -10,6 +10,7 @@
 
     import {
         getMediaDetails,
+        getWatchProviders,
         getMediaActors,
         getMediaImages,
         getMediaVideos,
@@ -34,6 +35,8 @@
         timeVideos: boolean = false,
         timeImages: boolean = false, 
         timeRecommendations: boolean = false;
+
+    let providerLink: string;
 
     let isGetDocumentId: boolean = false;
     let isFavoris: boolean = false;
@@ -81,6 +84,8 @@
         };
         
         datas.recommendations.sort((a,b) => b.vote_count - a.vote_count);
+
+        providerLink = await getWatchProviders(datas.details.id, "movie");
     }
 
     const fetchMovieFromRecommendations = async(idMovie: number) => {
@@ -158,6 +163,12 @@
                     <h2 id="title-details">
                         {datas.details.title}
                     </h2>
+                    {#if providerLink}
+                        <a href={providerLink["FR"].link} id="watch-providers"  target="_blank">
+                            <img src="/images/justwatch.svg" alt="Just Watch">
+                            <p>Disponible en Streaming</p>
+                        </a>
+                    {/if}
                     <hr>
                     <div id="content-details">
                         <p>{datas.details.vote_average.toFixed(1)}/10</p>
@@ -179,11 +190,11 @@
                         {:else}
                             <div class="loading">
                                 <Spinner 
-                                    widthSpin={20} 
-                                    heightSpin={20}
-                                    borderSpin={10}
-                                    borderTopSpin={10}
-                                    borderRadiusSpin={20}
+                                    widthSpin={30} 
+                                    heightSpin={30}
+                                    borderSpin={8}
+                                    borderTopSpin={8}
+                                    borderRadiusSpin={50}
                                 />
                             </div>
                         {/if}
@@ -322,9 +333,35 @@
         height: auto;
         box-shadow: -3px 3px 2px 1px rgb(0 0 0 / 20%);
     }
+    #block-header-details {
+        display: flex;
+    }
     #title-details {
+        align-content: flex-start;
         text-shadow: 0 0 4px white, 0 -5px 4px #ffff33, 2px -10px 6px #ffdd33, -2px -15px 11px #ff8800, 2px -25px 18px #ff2200;
         color: #000;
+        width: 80%;
+    }
+    #watch-providers {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: auto;
+        top: 0;
+        right: 0;
+        color: #ebc453;
+        text-decoration: none;
+        transition: all 0.5s ease;
+    }
+    #watch-providers:hover {
+        transform: scale(1.04);
+        transform-origin: bottom right 40px;
+    }
+    #watch-providers img {
+        width: unset;
+        height: 18px;
+        box-shadow: none;
     }
     #actors, #trailers, #images, #recommendations {
         display: flex;
