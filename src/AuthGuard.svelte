@@ -8,9 +8,9 @@
   </script>
     {#if initStore}
       {#if $authStore && typeof $authStore == "object" && $authStore.hasOwnProperty("uid") && $authStore.uid }
-        <slot {...$$restProps} />
+          <slot {...$$restProps} />
       {:else}
-        {navigate("/login-page", {replace: true})};
+          {navigate("/login-page", {replace: true})};
       {/if}
     {:else}
       <div class="main_spinner">

@@ -1,5 +1,7 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { navigate } from "svelte-navigator";
+    import { scale } from 'svelte/transition';
 
     import SignUp from "../components/SignUp.svelte";
     import SignIn from "../components/SignIn.svelte";
@@ -10,8 +12,19 @@
     let signInValues = {lastname: null, firstname: null, email: null, password: null, isSamePassword: null};
     let errorMessage: string;
 
+    let isDisconnected: boolean = false;
     let switchForm: boolean = false;
     let loadingForm: boolean = false;
+
+    onMount(() => {
+        setTimeout(() => {
+            if($authStore.uid) {
+                navigate("/account-page", {replace: true});
+            } else {
+                isDisconnected = true;
+            }
+        }, 1200);
+    });
 
     const changeSwitchForm = () => {
         switchForm = !switchForm;
@@ -49,7 +62,10 @@
         if(valuesIsNotEmpty && passwordIsTheSame) {
             try {
                 const user = await signUp(signInValues.lastname, signInValues.firstname, signInValues.email, signInValues.password);
-                if(user) $authStore = user.user;
+                if(user) {
+                    const { uid, displayName, email, metadata } = user.user;
+                    $authStore = {uid, displayName, email, data: metadata};
+                }
 
                 navigate("/search", {replace: true});
             } catch (error) {
@@ -63,14 +79,19 @@
         loadingForm = false;
     }
 </script>
-
-<div id="block-form">
-    {#if switchForm}
-        <SignUp signInValues={signInValues} signUpUser={signUpUser} errorMessage={errorMessage} switchForm={changeSwitchForm} loading={loadingForm} />
-    {:else}
-        <SignIn signInValues={signInValues} signInUser={signInUser} errorMessage={errorMessage} switchForm={changeSwitchForm} loading={loadingForm} />
-    {/if}
-</div>
+{#if isDisconnected}
+    <div id="block-form" out:scale={{delay: 200}}>
+        {#if switchForm}
+            <SignUp signInValues={signInValues} signUpUser={signUpUser} errorMessage={errorMessage} switchForm={changeSwitchForm} loading={loadingForm} />
+        {:else}
+            <SignIn signInValues={signInValues} signInUser={signInUser} errorMessage={errorMessage} switchForm={changeSwitchForm} loading={loadingForm} />
+        {/if}
+    </div>
+{:else}
+    <div class="main_spinner">
+        <img src="/images/loading_new.gif" alt="loading gif" >
+    </div>
+{/if}
 
 <style>
     #block-form {

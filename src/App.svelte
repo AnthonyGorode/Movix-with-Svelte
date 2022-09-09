@@ -13,6 +13,7 @@ import AuthGuard from "./AuthGuard.svelte";
   const SearchPage = () => import("./pages/SearchPage.svelte");
   const SignPage = () => import("./pages/SignPage.svelte");
   const OwnFavorite = () => import("./pages/OwnFavorite.svelte");
+  const Account = () => import("./pages/Account.svelte");
 
   export let url = ""; //This property is necessary declare to avoid ignore the Router
 </script>
@@ -34,9 +35,16 @@ import AuthGuard from "./AuthGuard.svelte";
     <Route path="favorites"> <Lazy component="{Favorite}" /> </Route>
     <Route path="search"> <Lazy component="{SearchPage}" /> </Route>
     <Route path="login-page"> <Lazy component="{SignPage}" /> </Route>
+
     <Route path="own-favorites">
       <AuthGuard>
         <Lazy component="{OwnFavorite}" />
+      </AuthGuard>
+    </Route>
+
+    <Route path="account-page">
+      <AuthGuard>
+        <Lazy component="{Account}" />
       </AuthGuard>
     </Route>
    </div>

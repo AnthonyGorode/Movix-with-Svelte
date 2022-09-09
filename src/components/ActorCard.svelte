@@ -42,7 +42,7 @@
             {/if} -->
             <div id="actor-birthday">
                 née le : {(actorDetails.birthday) ? moment(actorDetails.birthday).format("LL") : ""}
-                {#if !actorDetails.deathday && actorDetails.deathday}
+                {#if !actorDetails.deathday && actorDetails.birthday}
                     ({(new Date().getFullYear()) - (new Date(actorDetails.birthday).getFullYear())} ans)
                 {/if}
             </div>

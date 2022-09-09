@@ -14,7 +14,7 @@
     } from 'sveltestrap';
 
     import { onMount } from "svelte"; 
-    import { link, useLocation } from "svelte-navigator";
+    import { link, useLocation, navigate } from "svelte-navigator";
     import { onAuthStateChanged } from 'firebase/auth';
 
     import { auth } from "../../../firebase";
@@ -29,11 +29,17 @@
 
     onMount(() => {
       onAuthStateChanged(auth,
-        user => {
-          authStore.set(user);
+        (user) => {
+          if(user) {
+            const { uid, displayName, email, metadata } = user;
+            console.log(user);
+            authStore.set({uid, displayName, email, data: {metadata}});
+          }
         },
         error => {
-          $authStore = {uid: null};
+          $authStore = {uid: null, displayName: null, email: null, data: {
+          creationTime: null
+      }};
           console.error(error);
         }
       );
@@ -42,7 +48,10 @@
     const signOutUser = async() => {
       try {
         await logOut();
-        $authStore = {uid: null};
+        $authStore = {uid: null, displayName: null, email: null, data: {
+            creationTime: null
+        }};
+        {navigate("/home", {replace: true})};
       } catch (error) {
         console.error(error);
       }
@@ -63,7 +72,7 @@
                 <a href="/home" class={($location.pathname == "/home" || $location.pathname == "/" ) ? "focus" : "page"} use:link>Accueil</a>
               </NavLink>
           </NavItem>
-          {#if $authStore && typeof $authStore == "object" && $authStore.hasOwnProperty("uid") && $authStore.uid }
+          {#if $authStore.uid }
             <NavItem>
                 <NavLink>
                     <a href="/own-favorites" class={($location.pathname == "/own-favorites") ? "focus" : "page"} use:link>Mes Favoris</a>
@@ -84,12 +93,12 @@
             </NavLink>
         </NavItem>
 
-        {#if $authStore && typeof $authStore == "object" && $authStore.hasOwnProperty("uid") && $authStore.uid }
+        {#if $authStore.uid }
           <div id="dropdown-account">
             <Dropdown nav {isOpen} toggle={() => (isOpen = !isOpen)}>
-              <DropdownToggle nav caret>Mon Compte</DropdownToggle>
+              <DropdownToggle nav caret>{$authStore.displayName}</DropdownToggle>
               <DropdownMenu>
-                <DropdownItem>Compte</DropdownItem>
+                <DropdownItem><a href="/account-page" id="account-link" use:link>Compte</a></DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem on:click={signOutUser}><img class="logout_logo" src="/images/logout_user_account.webp" alt="logout"> Deconnexion</DropdownItem>
               </DropdownMenu>
@@ -219,5 +228,8 @@
 
   .logout_logo {
     width: 20px;
+  }
+  #account-link {
+    color: black!important;
   }
 </style>
