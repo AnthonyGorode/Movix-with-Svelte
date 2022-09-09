@@ -8,6 +8,8 @@
     import Spinner from "../components/Spinner.svelte";
     import FavoriteButton from "../components/FavoriteButton.svelte";
 
+    import { authStore } from "../hooks/auth.hook";
+
     import {
         getMediaDetails,
         getSeasonDetails,
@@ -50,8 +52,11 @@
     let episodesSeason: {seasonNumber: number, episodes: any[]}[] = [];
     let episodesSelectedToFilter: any[] = [];
     let episodesFilteredToWatch: any[] = [];
+    let uid: string; // uid of authenticate user
 
     onMount(async() => {
+        uid = $authStore.uid;
+
         if(Number(id)) await fetchTvDetails(id);
         else navigate("/home", { replace: true });
         
@@ -72,7 +77,7 @@
 
     const getFavorisId = async() => {
         if(datas.details) {
-            documentId = await getTvById(datas.details.id); // check if tv added in firebase and get docId
+            documentId = await getTvById(datas.details.id, uid); // check if tv added in firebase and get docId
             if(documentId) {
                 isFavoris = true;
             }
@@ -161,7 +166,7 @@
         const tv: TvModel = { id, name, original_name, original_language, first_air_date, overview, tagline, poster_path, backdrop_path, number_of_seasons, number_of_episodes, popularity, vote_average, vote_count, in_production };
         
         try {
-           documentId = await addTv(tv);
+           documentId = await addTv(tv, uid);
            isFavoris = true;
         } catch (error) {
             console.error(error);
@@ -170,7 +175,7 @@
 
     const deleteTvToFavorite = async(doc_id: string) => {
         try {
-            await deleteTv(doc_id);
+            await deleteTv(doc_id, uid);
             isFavoris = false;
         } catch (error) {
             console.error(error);

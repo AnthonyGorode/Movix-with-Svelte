@@ -33,7 +33,7 @@
           authStore.set(user);
         },
         error => {
-          authStore.set({});
+          $authStore = {uid: null};
           console.error(error);
         }
       );
@@ -42,7 +42,7 @@
     const signOutUser = async() => {
       try {
         await logOut();
-          authStore.set({});
+        $authStore = {uid: null};
       } catch (error) {
         console.error(error);
       }
@@ -63,7 +63,7 @@
                 <a href="/home" class={($location.pathname == "/home" || $location.pathname == "/" ) ? "focus" : "page"} use:link>Accueil</a>
               </NavLink>
           </NavItem>
-          {#if $authStore && typeof $authStore == "object" && $authStore.hasOwnProperty("uid")}
+          {#if $authStore && typeof $authStore == "object" && $authStore.hasOwnProperty("uid") && $authStore.uid }
             <NavItem>
                 <NavLink>
                     <a href="/own-favorites" class={($location.pathname == "/own-favorites") ? "focus" : "page"} use:link>Mes Favoris</a>
@@ -84,7 +84,7 @@
             </NavLink>
         </NavItem>
 
-        {#if $authStore && typeof $authStore == "object" && $authStore.hasOwnProperty("uid")}
+        {#if $authStore && typeof $authStore == "object" && $authStore.hasOwnProperty("uid") && $authStore.uid }
           <div id="dropdown-account">
             <Dropdown nav {isOpen} toggle={() => (isOpen = !isOpen)}>
               <DropdownToggle nav caret>Mon Compte</DropdownToggle>

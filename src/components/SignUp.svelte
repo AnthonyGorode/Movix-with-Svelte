@@ -12,10 +12,10 @@
 <h2>Inscription</h2>
 <form on:submit|preventDefault={signUpUser}>
     <FormGroup floating label="Nom">
-        <Input type="text" name="text" placeholder="entrer votre nom" bind:value={signInValues.lastname} />
+        <Input type="text" name="lastname" placeholder="entrer votre nom" bind:value={signInValues.lastname} />
     </FormGroup>
-    <FormGroup floating label="Adresse email">
-        <Input type="text" name="email" placeholder="entrer votre prenom" bind:value={signInValues.firstname} />
+    <FormGroup floating label="Prénom">
+        <Input type="text" name="firstname" placeholder="entrer votre prenom" bind:value={signInValues.firstname} />
     </FormGroup>
     <FormGroup floating label="Adresse email">
         <Input type="email" name="email" placeholder="exemple : johndoe@gmail.com" bind:value={signInValues.email} />
@@ -44,7 +44,7 @@
         }
         disabled={
         (!signInValues.lastname || !signInValues.firstname || !signInValues.email || !signInValues.password || !signInValues.isSamePassword &&  signInValues.password || signInValues.isSamePassword && signInValues.password != signInValues.isSamePassword) ? true : false
-        }>Sinscrire</button>
+        }>S'inscrire</button>
         
         {#if errorMessage}
             <Alert color="danger" fade={false} dismissible>
@@ -57,9 +57,6 @@
 </form>
 
 <style>
-    h2 {
-        text-align: center;
-    }
     button {
         background-color: rgba(27.45%, 22.75%, 19.22%, 0.88);
         border: 1px solid #00000033;

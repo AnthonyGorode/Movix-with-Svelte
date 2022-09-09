@@ -8,6 +8,8 @@
     import Spinner from "../components/Spinner.svelte";
     import ReturnButton from "../components/ReturnButton.svelte";
 
+    import { authStore } from "../hooks/auth.hook";
+
     import {
         getActorDetails,
         getAllMediaActor
@@ -36,7 +38,11 @@
 
     let previous_page = localStorage.getItem("previous_page");
 
+    let uid: string; // uid of authenticate user
+
     onMount(async() => {
+        uid = $authStore.uid;
+        
         if(id) await fetchActorDetails(id);
         else navigate("/home", { replace: true });
 
@@ -82,7 +88,7 @@
 
     const getFavorisId = async() => {
         if(actorDatas.details) {
-            documentId = await getActorById(actorDatas.details.id); // check if actor added in firebase and get docId
+            documentId = await getActorById(actorDatas.details.id, uid); // check if actor added in firebase and get docId
             if(documentId) {
                 isFavorite = true;
             }
@@ -98,7 +104,7 @@
         const movie: ActorModel = { id, name, also_known_as, birthday, deathday, place_of_birth, gender, biography, popularity, profile_path };
         
         try {
-           documentId = await addActor(movie);
+           documentId = await addActor(movie, uid);
            isFavorite = true;
         } catch (error) {
             console.error(error);
@@ -107,7 +113,7 @@
 
     const deleteActorToFavorite = async(doc_id: string) => {
         try {
-            await deleteActor(doc_id);
+            await deleteActor(doc_id, uid);
             isFavorite = false;
         } catch (error) {
             console.error(error);

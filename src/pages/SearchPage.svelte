@@ -40,7 +40,7 @@
     }
 </script>
 
-<form on:submit|preventDefault={searchMedia}>
+<form on:submit|preventDefault={searchMedia} out:scale={{delay: 200}}>
     <div id="search-input">
         <Input
             type="search"
@@ -55,7 +55,7 @@
     </div>
 </form>
 
-<hr>
+<hr out:scale={{delay: 200}}>
 
 {#if loadingDatas}     
     <div class="loading">

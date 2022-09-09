@@ -6,6 +6,8 @@
     import Spinner from "../components/Spinner.svelte";
     import FavoriteButton from "../components/FavoriteButton.svelte";
 
+    import { authStore } from "../hooks/auth.hook";
+
     import {
         getMediaDetails,
         getMediaActors,
@@ -38,7 +40,11 @@
 
     let documentId: string; // document ID of movie added on firebase
 
+    let uid: string; // uid of authenticate user
+
     onMount(async() => {
+        uid = $authStore.uid;
+
         if(Number(id)) await fetchMovieDetails(id);
         else navigate("/home", { replace: true });
         
@@ -58,7 +64,7 @@
 
     const getFavorisId = async() => {
         if(datas.details) {
-            documentId = await getMovieById(datas.details.id); // check if movie added in firebase and get docId
+            documentId = await getMovieById(datas.details.id, uid); // check if movie added in firebase and get docId
             if(documentId) {
                 isFavoris = true;
             }
@@ -109,7 +115,7 @@
         const movie: MovieModel = { id, title, original_title, overview, tagline, poster_path, backdrop_path, release_date, budget, revenue, popularity, vote_average, vote_count };
         
         try {
-           documentId = await addMovie(movie);
+           documentId = await addMovie(movie, uid);
            isFavoris = true;
         } catch (error) {
             console.error(error);
@@ -118,7 +124,7 @@
 
     const deleteMovieToFavorite = async(doc_id: string) => {
         try {
-            await deleteMovie(doc_id);
+            await deleteMovie(doc_id, uid);
             isFavoris = false;
         } catch (error) {
             console.error(error);

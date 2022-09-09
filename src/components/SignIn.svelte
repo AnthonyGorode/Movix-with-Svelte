@@ -47,9 +47,6 @@
 </form>
 
 <style>
-    h2 {
-        text-align: center;
-    }
     button {
         background-color: rgba(27.45%, 22.75%, 19.22%, 0.88);
         border: 1px solid #00000033;

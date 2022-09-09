@@ -27,7 +27,7 @@
 
     let mediaDisplayed: MovieModel | TvModel;
 
-    let loadingDatas:boolean = false;
+    let loadedDatas:boolean = false;
     let timeMedia: boolean = false;
     let timeActors: boolean = false;
 
@@ -53,16 +53,22 @@
                     mediaDisplayed = favoritesDatas.movie[0].movie;
                 }, 2000);
             }
-            else noFavoritesMovies = true;
+            else {
+                noFavoritesMovies = true;
+                timeMedia = true;
+            }
 
             if(!favoritesDatas.tv.length) noFavoritesTvs = true;
             
-            if(favoritesActors) setTimeout(() => timeActors = true, 3000);
-            else noFavoritesActors = true;
+            if(favoritesActors.length) setTimeout(() => timeActors = true, 3000);
+            else {
+                noFavoritesActors = true;
+                timeActors = true;
+            }
             
-            loadingDatas = true;
+            loadedDatas = true;
         } catch (error) {
-            loadingDatas = true;
+            loadedDatas = true; timeMedia = true; timeActors = true;
             console.error(error);
         }    
     }
@@ -152,7 +158,7 @@
 
 </script>
 
-{#if loadingDatas}
+{#if loadedDatas}
     {#if mediaDisplayed}
         <MediaDescription media={mediaDisplayed} typeMedia={keyMediaFavorite} />
     {/if}
@@ -208,7 +214,6 @@
                         poster_path={favorite.actor.profile_path}
                         fullName={favorite.actor.name}
                         index={i}
-                        typeMedia={keyMediaFavorite}
                         displayMedia={displayActorDetails}
                         removeMedia={removeActorToFavorite}
                         handleErrorImg={handleErrorActorImg}
