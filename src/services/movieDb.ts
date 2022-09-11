@@ -62,6 +62,11 @@ const getSeasonDetails = async(idTv: number, numSeason: number) => {
     return fetchMedia(`tv/${idTv}/season/${numSeason}?api_key=${apiKey}&language=fr`, "data");
 }
 
+// https://api.themoviedb.org/3/tv/1399/season/1/videos?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR
+const getTrailersSeason = async(idTv: number, numSeason: number) => {
+    return fetchMedia(`tv/${idTv}/season/${numSeason}/videos?api_key=${apiKey}&language=fr-FR`, "results");
+}
+
 // https://api.themoviedb.org/3/tv/92783/credits?api_key=2fae416c150ee4b2e2c62a138bf9b3ea&language=fr-FR
 const getMediaActors = async(idFilm: number, media: media) => {
     return fetchMedia(`/${media}/${idFilm}/credits?api_key=${apiKey}&language=fr-FR`, "data");
@@ -110,6 +115,7 @@ export {
     getMediaDetails,
     getWatchProviders,
     getSeasonDetails,
+    getTrailersSeason,
     getMediaActors,
     getMediaImages,
     getMediaVideos,

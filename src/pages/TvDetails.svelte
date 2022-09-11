@@ -2,7 +2,7 @@
     import { onMount } from "svelte";   
     import { navigate } from "svelte-navigator";
     import { scale, slide } from "svelte/transition";
-    import { Input } from 'sveltestrap';
+    import { Input, Button } from 'sveltestrap';
     import moment from "../services/utils/momentCustom";
 
     import Spinner from "../components/Spinner.svelte";
@@ -14,6 +14,7 @@
         getMediaDetails,
         getWatchProviders,
         getSeasonDetails,
+        getTrailersSeason,
         getMediaActors,
         getMediaImages,
         getMediaVideos,
@@ -57,6 +58,12 @@
     let episodesFilteredToWatch: any[] = [];
     let uid: string; // uid of authenticate user
 
+    let trailersSeasons : {season_number: number, trailers: any[]}[] = [];
+    let indexTrailersSelected: number;
+    let displayTrailerToWatch: boolean = false;
+
+    $: console.log(trailersSeasons.length);
+
     onMount(async() => {
         uid = $authStore.uid;
 
@@ -95,10 +102,27 @@
             images: await getMediaImages(idTv, "tv"),
             recommendations: await getMediaRecommendations(idTv, "tv")
         };
-        
+        console.log(datas.details.seasons);
         datas.recommendations.sort((a,b) => b.vote_count - a.vote_count);
 
         providerLink = await getWatchProviders(datas.details.id, "tv");
+
+        // get The trailers for a season
+        if(datas.details.seasons[0]) { 
+            const { season_number } = datas.details.seasons[0];
+            if(season_number) {
+                const videos = await getTrailersSeason(datas.details.id, season_number);
+
+                let trailer = videos.find(video => video.type == "Trailer");
+
+                if(trailer) {
+                    trailersSeasons.push({season_number, trailers: [trailer]});
+                } else {
+                    trailersSeasons.push({season_number, trailers: videos});
+                }
+            }
+
+        }
     }
 
     const fetchTvFromRecommendations = async(idTv: number) => {
@@ -199,9 +223,38 @@
         }
     }
 
-    const resetEpisodesSelected = () => {
+    const resetEpisodesSelectedAndTrailer = async() => {
         episodesFilteredToWatch = [];
         displayEpisodes = false;
+
+        setTimeout(async() => { // USE SETIMEOUT FOR TO AWAIT THE BIND ON seasonSelected VARIABLE
+
+            const { season_number } = datas.details.seasons[seasonSelected];
+            console.log(season_number, seasonSelected);
+            let isTrailersExist = trailersSeasons.findIndex(trailersSeason => trailersSeason.season_number == season_number);
+            if(isTrailersExist >= 0) { // CHECK IF TRAILERS ALREADY EXIST IN ARRAY
+                indexTrailersSelected = isTrailersExist;
+            } else { // ELSE GET IT WITH THE API
+                const videos = await getTrailersSeason(datas.details.id, season_number);
+
+                let trailer = videos.find(video => video.type == "Trailer");
+
+                if(trailer) {
+                    trailersSeasons.push({season_number, trailers: [trailer]});
+                } else {
+                    trailersSeasons.push({season_number, trailers: videos});
+                }
+                indexTrailersSelected = trailersSeasons.length - 1;
+            }
+
+        }, 100);
+    }
+
+    const watchTrailerSeason = (type: string = "") => {
+        displayTrailerToWatch = !displayTrailerToWatch;
+        if(type == "open") {
+            setTimeout(() => document.querySelector("#watch-trailer").scrollIntoView(), 100);
+        }
     }
 
     const navigateToActorDetails = (id) => {
@@ -210,7 +263,7 @@
         navigate(`/actor-details/${id}`, { replace: true });
     }
 </script>
-
+<div id="background-disabled" style={(displayTrailerToWatch) ? "visibility: visible" : "visibility: hidden"}></div>
 {#if datas}
     {#if datas.details}
         <div 
@@ -285,7 +338,7 @@
 
     {#if datas.details && datas.details.seasons && timeSeason}    
         <div id="season-select" style="width: 200px;" out:scale={{delay: 200}}>
-            <Input type="select" name="select" bind:value={seasonSelected} on:change={() => resetEpisodesSelected()}>
+            <Input type="select" name="select" bind:value={seasonSelected} on:change={() => resetEpisodesSelectedAndTrailer()}>
                 {#each datas.details.seasons as season, index}    
                     <option value="{index.toString()}"> {season.name} </option>
                 {/each}
@@ -301,6 +354,21 @@
                             {(episodesFilteredToWatch.length ? new Date(episodesFilteredToWatch[0].air_date).getFullYear() : (datas.details.seasons[seasonSelected].air_date ? new Date(datas.details.seasons[seasonSelected].air_date).getFullYear() : "____"))}
                              | 
                             {datas.details.seasons[seasonSelected].episode_count} épisodes
+
+                            {#if trailersSeasons[indexTrailersSelected]}
+                                {#if trailersSeasons[indexTrailersSelected].trailers[0]}                              
+                                 |
+                                   <span id="watch-trailer" on:click={ () => watchTrailerSeason("open")}> <img src="/images/play-video.png" alt="play video"> Voir Bande Annonce</span>
+                                    {#if displayTrailerToWatch}                                       
+                                        <div id="video-trailer-season" style={(displayTrailerToWatch) ? "visibility: visible" : "visibility: hidden"} in:scale={{delay: 200}} out:scale={{delay: 200}} >
+                                            <Button color="danger" on:click={() => watchTrailerSeason()}>X</Button>
+                                            <iframe allow="fullscreen" class="block_video" title="trailer youtube" width="1000" height="600"
+                                                src="https://www.youtube.com/embed/{trailersSeasons[indexTrailersSelected].trailers[0].key}">
+                                            </iframe>
+                                        </div>
+                                    {/if}
+                                {/if}
+                            {/if}
                         </p>
                     </div>
                     <p>La {(datas.details.seasons[seasonSelected].season_number) ? datas.details.seasons[seasonSelected].name : "Saison 0"} de {datas.details.name} a été diffusée à partir du {(episodesFilteredToWatch.length ? moment(episodesFilteredToWatch[0].air_date).format("LL") : (datas.details.seasons[seasonSelected].air_date ? moment(datas.details.seasons[seasonSelected].air_date).format("LL") : "(aucune date)"))}.</p>
@@ -458,6 +526,42 @@
 {/if}
 
 <style>
+    #background-disabled {
+        background: rgba(0, 0, 0, 0.5);
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: 1;
+    }
+    #video-trailer-season {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: auto;
+        right: auto;
+        left: auto;
+        bottom: auto;
+        z-index: 2;
+
+        width: 1000px;
+        height: 600px;
+    }
+    #video-trailer-season :global(button) {
+        align-self: flex-start;
+    }
+    #watch-trailer {
+        cursor: pointer;
+        transition: all 0.5s ease;
+    }
+    #watch-trailer:hover {
+        text-decoration: underline;
+        transform: scale(1.02);
+        transform-origin: bottom right 40px;
+        box-shadow: 9px 9px 2px 1px rgb(0 0 0 / 20%);
+    }
+    #watch-trailer img {
+        width: 25px;
+    }
     #block-episodes {
         display: flex;
         flex-direction: column;
