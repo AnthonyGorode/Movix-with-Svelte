@@ -275,7 +275,7 @@
                 in:slide
                 out:scale={{delay: 200}}  
         >
-            <div style="display: flex;justify-content: center;width: 70%;color: white;margin:2%;">
+            <div id="container-details">
                 <div id="block-image">
                     <a id="image_{datas.details.id}" href="https://image.tmdb.org/t/p/original{datas.details.poster_path}" target="_blank">
                         <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster tv">
@@ -294,7 +294,7 @@
                     {/if}
                     <hr>
                     <div id="content-details">
-                        <p>{datas.details.vote_average.toFixed(1)}/10</p>
+                        <p id="overate-details">{datas.details.vote_average.toFixed(1)}/10</p>
                         <p>{new Date(datas.details.first_air_date).getFullYear()}</p>
                         <p id="genres-details">
                             {#if datas.details.genres}    
@@ -526,6 +526,87 @@
 {/if}
 
 <style>
+    #container-details {
+        display: flex;
+        justify-content: center;
+        width: 70%;
+        color: white;
+        margin: 2%;
+    }
+    @media (max-width: 990px) {
+        #container-details {
+            width: unset;
+        }
+        #title-details {
+            width: 190px;
+        }
+        #video-trailer-season {
+            left: 0!important;
+            width: 100%!important;
+        }
+        #video-trailer-season iframe {
+            width: 700px!important;
+        }
+    }
+    @media (max-width: 600px) {
+        #container-details {
+            width: unset;
+            flex-direction: column;
+        }
+        #block-image {
+            display: flex;
+            justify-content: center;
+        }
+        #block-details {
+            margin-top: 20px;
+        }
+        #title-details {
+            visibility: hidden;
+        }
+        #watch-providers {
+            left: 0;
+        }
+        #content-details {
+            flex-wrap: wrap;
+        }
+        .title_block {
+            overflow-wrap: anywhere;
+        }
+
+        #block-season-description {
+            flex-direction: column;
+            align-items: center;
+        }
+        #description-season {
+            margin-left: unset!important;
+            width: unset!important;
+        }
+        #block-details-season {
+            flex-direction: column;
+        }
+        #video-trailer-season {
+            overflow-x: scroll;
+            width: 100%!important;
+        }
+        #block-episodes {
+            padding: unset!important;
+            margin: unset!important;
+        }
+        .card_episode {
+            flex-direction: column;
+        }
+        .title_image_episode {
+            margin-right: unset!important;
+            width: unset!important;
+        }
+    }
+    
+    #genres-details {
+        text-align: center;
+    }
+    #overate-details {
+        margin-right: 10px;
+    }
     #background-disabled {
         background: rgba(0, 0, 0, 0.5);
         width: 100%;
