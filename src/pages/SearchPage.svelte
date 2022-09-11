@@ -2,6 +2,8 @@
 	import { fly, scale } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
     import { Input } from "sveltestrap";
+
+    import { innerWidthStore } from "../hooks/viewport.hook";
     
     import Spinner from "../components/Spinner.svelte";
     import Movie from "../components/Movie.svelte";
@@ -127,6 +129,17 @@
         margin-top: 40px;
         margin-left: auto;
         margin-right: auto;
+    }
+    @media (max-width: 600px) {
+            #search-input {
+            width: unset;
+        }
+    }
+    
+    @media (max-width: 300px) {
+        button img {
+            width: 18px!important;
+        }
     }
     #search-input :global(input) {
         border-radius: 0.375rem 0 0 0.375rem;
