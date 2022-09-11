@@ -154,7 +154,7 @@
                 in:slide
                 out:scale={{delay: 200}}  
         >
-            <div style="display: flex;justify-content: center;width: 70%;color: white;margin:2%;">
+            <div id="container-details">
                 <div id="block-image">
                     <a id="image_{datas.details.id}" href="https://image.tmdb.org/t/p/original{datas.details.poster_path}" target="_blank">
                         <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster film">
@@ -415,6 +415,13 @@
         transform: scale(1.04);
         transform-origin: bottom right 40px;
     }
+    #container-details {
+        display: flex;
+        justify-content: center;
+        width: 70%;
+        color: white;
+        margin:2%;
+    }
     #block-image img {
         width: 300px;
         height: 450px;
@@ -428,6 +435,37 @@
         transform-origin: bottom right 40px;
         box-shadow: 12px 12px 2px 1px rgb(0 0 0 / 20%);
     }
+    @media (max-width: 990px) {
+        #container-details {
+            width: unset;
+        }
+    }
+    @media (max-width: 600px) {
+        #container-details {
+            width: unset;
+            flex-direction: column;
+        }
+        #block-image {
+            display: flex;
+            justify-content: center;
+        }
+        #block-details {
+            margin-top: 20px;
+        }
+        #title-details {
+            visibility: hidden;
+        }
+        #watch-providers {
+            left: 0;
+        }
+        #content-details {
+            flex-wrap: wrap;
+        }
+        #title-block {
+            overflow-wrap: anywhere;
+        }
+    }
+
     .block_actor img {
         border-radius: 10px;
     }

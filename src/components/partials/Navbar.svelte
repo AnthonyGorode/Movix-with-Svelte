@@ -23,7 +23,8 @@
 
     const location = useLocation();
 
-    let isOpen = false;
+    let isOpenToggler = false;
+    let isOpenDropdown = false;
 
     onMount(() => {
       onAuthStateChanged(auth,
@@ -56,14 +57,14 @@
     }
   
     function handleUpdate(event) {
-      isOpen = event.detail.isOpen;
+      isOpenToggler = event.detail.isOpen;
     }
   </script>
   <div id="navbar">
     <Navbar color="dark" dark expand="md">
       <NavbarBrand href="/"><div id="title-app"> Movix <img id="navbar-svelte-logo" src="/images/Svelte_logo.png" alt="logo svelte" /></div></NavbarBrand>
-      <NavbarToggler on:click={() => (isOpen = !isOpen)} />
-      <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
+      <NavbarToggler on:click={() => (isOpenToggler = !isOpenToggler)} />
+      <Collapse isOpen={isOpenToggler} navbar expand="md" on:update={handleUpdate}>
         <Nav navbar>
           <NavItem>
               <NavLink>
@@ -105,7 +106,7 @@
 
         {#if $authStore.uid }
           <div id="dropdown-account">
-            <Dropdown nav {isOpen} toggle={() => (isOpen = !isOpen)}>
+            <Dropdown nav isOpen={isOpenDropdown} toggle={() => (isOpenDropdown = !isOpenDropdown)}>
               <DropdownToggle nav caret>{$authStore.displayName}</DropdownToggle>
               <DropdownMenu>
                 <DropdownItem><a href="/account-page" id="account-link" use:link>Compte</a></DropdownItem>
