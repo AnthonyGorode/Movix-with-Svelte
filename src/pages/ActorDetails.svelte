@@ -189,6 +189,30 @@
 {/if}
 
 <style>
+    @media (max-width: 600px) and (max-width: 950px) {
+        #actor-details-block {
+            flex-direction: column;
+            padding: unset!important;
+        }     
+        #media-block {
+            width: unset!important;
+        }
+        #movies, #series {
+            margin: 5px!important;
+        }
+    }
+    @media (max-width: 1100px) {
+        #actor-details-block {
+            flex-direction: column;
+            padding: unset!important;
+        }     
+        #media-block {
+            width: unset!important;
+        }
+        #movies, #series {
+            margin: 5px!important;
+        }
+    }
     #block-return-btn > :global(div#return-button) {       
         bottom: 0px;
     }

@@ -62,6 +62,20 @@
 </div>
 
 <style>
+    @media (max-width: 600px) {       
+        #actor-details {
+            width: unset!important;
+        }
+        #actor-credentials {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+    @media (max-width: 1100px) {
+        #actor-details {
+            width: unset!important;
+        }
+    }
     #actor-birthday, #actor-place-birth, #actor-deathday, #actor-overwiew {
         color: white;
         font-size: large;
