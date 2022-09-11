@@ -1,10 +1,12 @@
 <script lang="ts">
+    import { innerWidthStore } from "../hooks/viewport.hook";
+    
     export let keyMedia;
     export let switchMedia;
     export let typeMedia; // discover | marvel | trending | null
 </script>
 
-<div class="selector">
+<div class="selector {($innerWidthStore < 750) ? 'selector_mobile_view' : 'selector_laptop_view'}">
     <h3 class="{keyMedia == 'movie' ? 'switch_active_' + typeMedia : '' }" on:click={() => switchMedia("movie", typeMedia)}>Films</h3>
     <h3 class="{keyMedia == 'tv' ? 'switch_active_' + typeMedia : '' }" on:click={() => switchMedia("tv", typeMedia)}>Séries</h3>
 </div>
@@ -19,10 +21,16 @@
         border-radius: 30px;
         margin-left: 20px;
     }
-    .selector h3 {
+    .selector_laptop_view h3 {
         padding: 4px 20px;
         margin-bottom: unset;
         font-size: 16px;
+        cursor: pointer;
+    }
+    .selector_mobile_view h3 {
+        padding: 4px 20px;
+        margin-bottom: unset;
+        font-size: 10px;
         cursor: pointer;
     }
     .switch_active_discover, .switch_active_anime, .switch_active_trending, .switch_active_marvel {

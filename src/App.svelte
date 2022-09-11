@@ -1,9 +1,11 @@
 <script>
   import { Router, Route } from "svelte-navigator";
-import AuthGuard from "./AuthGuard.svelte";
+  import AuthGuard from "./AuthGuard.svelte";
   
   import Navbar from "./components/partials/Navbar.svelte";
   import Lazy from "./Lazy.svelte";
+
+  import { innerWidthStore, innerHeightStore } from "./hooks/viewport.hook";
 
   const Home = () => import("./pages/Home.svelte");
   const MovieDetails = () => import("./pages/MovieDetails.svelte");
@@ -17,6 +19,8 @@ import AuthGuard from "./AuthGuard.svelte";
 
   export let url = ""; //This property is necessary declare to avoid ignore the Router
 </script>
+
+<svelte:window bind:innerWidth={$innerWidthStore} bind:innerHeight={$innerHeightStore} />
 
 <Router url="{url}" primary={false}>
   <Navbar />

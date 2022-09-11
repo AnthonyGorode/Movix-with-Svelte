@@ -3,6 +3,8 @@
     import { scale } from "svelte/transition";
 	import { slide } from 'svelte/transition';
 
+    import { innerWidthStore } from "../hooks/viewport.hook";
+
     export let movie;
 </script>
 
@@ -12,19 +14,23 @@
     in:slide
     out:scale={{delay: 200}}
 >
-    <div style="display: flex;justify-content: center;color: white;width: 100vh; height: 100%;align-items: center;">
+    <div class={($innerWidthStore < 950) ? "block_film_tablet_view" : ($innerWidthStore < 750) ? "block_film_mobile_view" : "block_film_laptop_view"}>
         <div id="block-details">
-            <h1 id="title-details">
+            <h1 id="title-details" class={($innerWidthStore < 750) ? "title_details_mobile_view" : "title_details_laptop_view"}>
                 {movie.title}
             </h1>
             <hr>
-            <div id="content-details">
+            <div id="content-details" class={($innerWidthStore < 750) ? "content_details_mobile_view" : "content_details_laptop_view"}>
                 <p>{movie.vote_average.toFixed(1)}/10</p>
                 <p>{new Date(movie.release_date).getFullYear()}</p>
             </div>
             <hr>
-            <p id="description-details">
-                {movie.overview.substring(0, 400)} . . . 
+            <p id="description-details" class={($innerWidthStore < 750) ? "description_details_mobile_view" : "description_details_laptop_view"}>
+                {#if $innerWidthStore < 750}
+                    {movie.overview.substring(0, 100)} . . .
+                {:else} 
+                    {movie.overview.substring(0, 400)} . . . 
+                {/if}
                 <span id="voir-plus">
                     <Link to="/movie-details/{movie.id}" class="link_details">VOIR PLUS</Link>
                 </span>
@@ -34,11 +40,29 @@
 </div>
 
 <style>
+    .block_film_laptop_view {
+        display: flex;
+        justify-content: center;
+        color: white;
+        width: 100vh;
+        height: 70vh;
+        align-items: center;
+    }
+    .block_film_mobile_view {
+        display: flex;
+        color: white;
+        align-items: center;
+    }
+    
+    .block_film_tablet_view {
+        display: flex;
+        color: white;
+        align-items: center;
+    }
     #block-film-first {
         background-size: cover;
         background-position: 100% 20%;
         background-repeat: no-repeat no-repeat;
-        height: 70vh;
         box-shadow: -3px 3px 2px 1px rgb(0 0 0 / 20%);
     }
     #block-film-first:hover {
@@ -86,11 +110,30 @@
         background: linear-gradient(rgba(27.45%, 22.75%, 19.22%, 0.60), rgba(27.45%, 22.75%, 19.22%, 0.60), rgba(27.45%, 22.75%, 19.22%, 0.60));
         padding: 30px;
         border-radius: 100px;
+        margin: 10px;
     }
-    #title-details {
+    .title_details_laptop_view {
         text-align: center;
         text-shadow: 0 0 4px white, 0 -5px 4px #ffff33, 2px -10px 6px #ffdd33, -2px -15px 11px #ff8800, 2px -25px 18px #ff2200;
         color: #000;
+    }
+    .title_details_mobile_view {
+        text-align: center;
+        font-size: 16px;
+        text-shadow: 0 0 4px white, 0 -5px 4px #ffff33, 2px -10px 6px #ffdd33, -2px -15px 11px #ff8800, 2px -25px 18px #ff2200;
+        color: #000;
+    }
+    .content_details_laptop_view {
+        font-size: 30px;
+    }
+    .content_details_mobile_view {
+        font-size: 15px!important;   
+    }
+    .description_details_laptop_view {
+        font-size: 15px;
+    }
+    .description_details_mobile_view {
+        font-size: 12px!important;
     }
     #voir-plus {
         display: inline-block;

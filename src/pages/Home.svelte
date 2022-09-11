@@ -8,6 +8,8 @@
     import MovieDescription from "../components/MovieDescription.svelte";
     import SelectorMedia from "../components/SelectorMedia.svelte";
 
+    import { innerWidthStore } from "../hooks/viewport.hook";
+
     import {
         getMediaDiscover,
         getMediaMarvel,
@@ -120,7 +122,7 @@
         <MovieDescription movie={firstMovie} />
     {/if}
     <div class="title_container" out:scale={{delay: 200}}>
-        <h2 class="title_block" style="margin-top: 20px;"> À découvrir </h2>
+        <h2 class={($innerWidthStore < 750) ? "title_block_mobile_view" : "title_block"} style="margin-top: 20px;"> À découvrir </h2>
         <SelectorMedia keyMedia={keyMediaDiscover} typeMedia="discover" switchMedia={switchMedia} />
     </div>
     <div id="discover" out:scale={{delay: 200}}>
@@ -147,7 +149,7 @@
     <hr>
 
     <div class="title_container" out:scale={{delay: 200}}>
-        <h2 class="title_block">Animes Populaires</h2>
+        <h2 class={($innerWidthStore < 750) ? "title_block_mobile_view" : "title_block"}>Animes Populaires</h2>
         <SelectorMedia keyMedia={keyMediaAnime} typeMedia="anime" switchMedia={switchMedia} />
     </div>
     <div id="anime" out:scale={{delay: 200}}>
@@ -174,7 +176,7 @@
     <hr>
 
     <div class="title_container" out:scale={{delay: 200}}>
-        <h2 class="title_block">Tendances</h2>
+        <h2 class={($innerWidthStore < 750) ? "title_block_mobile_view" : "title_block"}>Tendances</h2>
         <SelectorMedia keyMedia={keyMediaTrending} typeMedia="trending" switchMedia={switchMedia} />
     </div>
     <div id="trending" out:scale={{delay: 200}}>
@@ -201,7 +203,7 @@
     <hr>
 
     <div class="title_container" out:scale={{delay: 200}}>
-        <h2 class="title_block">Best Marvel</h2>
+        <h2 class={($innerWidthStore < 750) ? "title_block_mobile_view" : "title_block"}>Best Marvel</h2>
         <SelectorMedia keyMedia={keyMediaMarvel} typeMedia="marvel" switchMedia={switchMedia} />
     </div>
     <div id="marvel" out:scale={{delay: 200}}>
@@ -267,6 +269,18 @@
 </div> -->
 
 <style>
+    /* RESPONSIVE VIEWPORT */
+    .title_block_mobile_view {      
+        padding-left: 20px;
+        font-family: 'Bungee Inline', cursive;
+        color: rgba(27.45%, 22.75%, 19.22%, 0.88);
+        font-size: 1rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
     #discover, #anime, #trending, #marvel {
         display: flex;
 
