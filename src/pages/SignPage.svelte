@@ -109,6 +109,23 @@
         transform: scale(1.04);
     }
 
+    @media (max-width: 980px) { /* TABLET */
+        #block-form {
+            width: 50%;
+        }
+    }
+
+    @media (max-width: 600px) { /* MOBILE */
+        #block-form {
+            margin: unset;
+            margin-top: 50px;
+            width: unset;
+        }
+        #block-form :global(h2) {
+            font-size: 1.9rem!important;
+        }
+    }
+
     #block-form :global(h2) {
         font-family: 'Bungee Inline', cursive;
         text-align: center;
