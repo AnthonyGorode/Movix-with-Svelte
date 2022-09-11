@@ -27,7 +27,7 @@
             <hr>
             <p id="description-details" class={($innerWidthStore < 750) ? "description_details_mobile_view" : "description_details_laptop_view"}>
                 {#if $innerWidthStore < 750}
-                    {movie.overview.substring(0, 100)} . . .
+                    {movie.overview.substring(0, 200)} . . .
                 {:else} 
                     {movie.overview.substring(0, 400)} . . . 
                 {/if}
