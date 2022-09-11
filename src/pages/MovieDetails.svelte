@@ -460,8 +460,9 @@
         }
         #content-details {
             flex-wrap: wrap;
+            font-size: unset!important;
         }
-        #title-block {
+        .title_block {
             overflow-wrap: anywhere;
         }
     }
