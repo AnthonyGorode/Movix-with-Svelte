@@ -49,9 +49,12 @@
             datasTrending.movie.sort((a,b) => b.vote_average - a.vote_average);
 
             loadingDatas = true;
+            let movie;
+            movie = datasMarvel.movie.find(movie => movie.id == "616037");
+            if(!movie) datasDiscover.movie[0];
 
             setTimeout(async() => timeDiscover = true, 1000);
-            setTimeout(async() => firstMovie = datasDiscover.movie.find(movie => movie.id == "616037"), 2000);
+            setTimeout(async() => firstMovie = movie, 2000);
             setTimeout(async() => timeAnime = true, 3000);
             setTimeout(async() => timeTrending = true, 6000);
             setTimeout(async() => timeMarvel = true, 8000);
