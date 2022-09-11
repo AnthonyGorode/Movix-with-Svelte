@@ -85,6 +85,13 @@
           {/if}
         </Nav>
         <Nav class="ms-auto">
+
+          <NavItem>
+            <NavLink>
+                <a href="/search" class="search" use:link><img src="/images/logo-search.png" alt="search logo" title="Rechercher"></a>
+            </NavLink>
+          </NavItem>
+          
           <NavItem>
             <NavLink>
                 <a 
@@ -94,13 +101,7 @@
                   target="popup" on:click={() => window.open('https://github.com/AnthonyGorode/Movix-with-Svelte','Github')}
                 >Github</a>
             </NavLink>
-        </NavItem>
-
-          <NavItem>
-            <NavLink>
-                <a href="/search" class="search" use:link><img src="/images/logo-search.png" alt="search logo" title="Rechercher"></a>
-            </NavLink>
-        </NavItem>
+          </NavItem>
 
         {#if $authStore.uid }
           <div id="dropdown-account">
