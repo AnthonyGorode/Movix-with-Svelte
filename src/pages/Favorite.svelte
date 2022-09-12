@@ -244,4 +244,9 @@
         font-size: 20px;
         margin: auto;
     }
+    @media (max-width: 300px) {
+        h2 {
+            font-size: 1.5rem;
+        }
+    }
 </style>

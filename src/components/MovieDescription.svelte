@@ -40,13 +40,16 @@
 </div>
 
 <style>
+    @media (max-width: 950px) {
+        #block-film-first {
+            height: unset!important;
+        } 
+    }
     .block_film_laptop_view {
         display: flex;
-        justify-content: center;
         color: white;
         width: 100vh;
-        height: 70vh;
-        align-items: center;
+        padding: 20px;
     }
     .block_film_mobile_view {
         display: flex;
@@ -64,6 +67,7 @@
         background-position: 100% 20%;
         background-repeat: no-repeat no-repeat;
         box-shadow: -3px 3px 2px 1px rgb(0 0 0 / 20%);
+        height: 100vh;
     }
     #block-film-first:hover {
         animation-duration: 1s;
