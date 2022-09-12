@@ -86,7 +86,7 @@
         datas.recommendations.sort((a,b) => b.vote_count - a.vote_count);
 
         providerLink = await getWatchProviders(datas.details.id, "movie");
-        console.log(providerLink);
+        
     }
 
     const fetchMovieFromRecommendations = async(idMovie: number) => {
@@ -157,7 +157,7 @@
             <div id="container-details">
                 <div id="block-image">
                     <a id="image_{datas.details.id}" href="https://image.tmdb.org/t/p/original{datas.details.poster_path}" target="_blank">
-                        <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}" alt="Poster film">
+                        <img src="https://image.tmdb.org/t/p/w500{datas.details.poster_path}?{Date.now()}" alt="Poster film">
                     </a>
                 </div>
                 <div id="block-details">
@@ -224,7 +224,7 @@
                         class="block_actor"
                         on:click={() => navigateToActorDetails(actor.id)}
                     >
-                        <img src="https://image.tmdb.org/t/p/original{actor.profile_path}" on:error={handleErrorActorImg} alt="{actor.name}" width="200px" height="200px" loading="lazy"/>
+                        <img src="https://image.tmdb.org/t/p/original{actor.profile_path}?{Date.now()}" on:error={handleErrorActorImg} alt="{actor.name}" width="200px" height="200px" loading="lazy"/>
                         <h3 class="actor_name">{actor.name}</h3>
                         <h4 class="actor_character">{actor.character}</h4>
                     </div>
@@ -250,7 +250,7 @@
                 {#each datas.videos as video}    
                     <div id="video_{video.id}">
                         <iframe allow="fullscreen" class="block_video" title="trailer youtube" width="600" height="400"
-                            src="https://www.youtube.com/embed/{video.key}">
+                            src="https://www.youtube.com/embed/{video.key}?{Date.now()}">
                         </iframe>
                     </div>
                 {/each}
@@ -274,7 +274,7 @@
             {#if datas.images && timeImages}
                 {#each datas.images.posters as image, i}    
                     <a id="image_{i}" class="block_image" href="https://image.tmdb.org/t/p/original{image.file_path}" target="_blank">
-                        <img src="https://image.tmdb.org/t/p/original{image.file_path}" alt="poster film" width="420" height="400" loading="lazy"/>    
+                        <img src="https://image.tmdb.org/t/p/original{image.file_path}?{Date.now()}" alt="poster film" width="420" height="400" loading="lazy"/>    
                     </a>
                 {/each}
             {:else}
@@ -302,7 +302,7 @@
                         title="{recommendation.title}"
                         on:click={() => fetchMovieFromRecommendations(recommendation.id)}
                     >
-                        <img src="https://image.tmdb.org/t/p/w500{recommendation.poster_path}" alt="{recommendation.title} - Poster" width="420" height="400" loading="lazy" />    
+                        <img src="https://image.tmdb.org/t/p/w500{recommendation.poster_path}?no_cache={Date.now()}" alt="{recommendation.title} - Poster" width="420" height="400" loading="lazy" />    
                     </div>
                 {/each}   
             {:else}

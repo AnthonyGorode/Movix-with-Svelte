@@ -62,7 +62,7 @@
   </script>
   <div id="navbar">
     <Navbar color="dark" dark expand="md">
-      <NavbarBrand href="/"><div id="title-app"> Movix <img id="navbar-svelte-logo" src="/images/Svelte_logo.png" alt="logo svelte" /></div></NavbarBrand>
+      <NavbarBrand href="/"><div id="title-app"> Movix <img id="navbar-svelte-logo" src="/images/Svelte_Logo.png" alt="logo svelte" /></div></NavbarBrand>
       <NavbarToggler on:click={() => (isOpenToggler = !isOpenToggler)} />
       <Collapse isOpen={isOpenToggler} navbar expand="md" on:update={handleUpdate}>
         <Nav navbar>

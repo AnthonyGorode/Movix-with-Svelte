@@ -62,8 +62,6 @@
     let indexTrailersSelected: number;
     let displayTrailerToWatch: boolean = false;
 
-    $: console.log(trailersSeasons.length);
-
     onMount(async() => {
         uid = $authStore.uid;
 
@@ -102,7 +100,7 @@
             images: await getMediaImages(idTv, "tv"),
             recommendations: await getMediaRecommendations(idTv, "tv")
         };
-        console.log(datas.details.seasons);
+        
         datas.recommendations.sort((a,b) => b.vote_count - a.vote_count);
 
         providerLink = await getWatchProviders(datas.details.id, "tv");
@@ -230,7 +228,7 @@
         setTimeout(async() => { // USE SETIMEOUT FOR TO AWAIT THE BIND ON seasonSelected VARIABLE
 
             const { season_number } = datas.details.seasons[seasonSelected];
-            console.log(season_number, seasonSelected);
+            
             let isTrailersExist = trailersSeasons.findIndex(trailersSeason => trailersSeason.season_number == season_number);
             if(isTrailersExist >= 0) { // CHECK IF TRAILERS ALREADY EXIST IN ARRAY
                 indexTrailersSelected = isTrailersExist;
@@ -346,7 +344,7 @@
         </div>
         <div id="block-seasons" out:scale={{delay: 200}}>
             <div id="block-season-description">
-                <img id="block-image-season" src="https://image.tmdb.org/t/p/w500{datas.details.seasons[seasonSelected].poster_path}" alt="poster season">
+                <img id="block-image-season" src="https://image.tmdb.org/t/p/w500{datas.details.seasons[seasonSelected].poster_path}?{Date.now()}" alt="poster season">
                 <div id="description-season">
                     <div id="block-details-season">
                         <div id="title-season"> {datas.details.seasons[seasonSelected].name} </div>
@@ -363,7 +361,7 @@
                                         <div id="video-trailer-season" style={(displayTrailerToWatch) ? "visibility: visible" : "visibility: hidden"} in:scale={{delay: 200}} out:scale={{delay: 200}} >
                                             <Button color="danger" on:click={() => watchTrailerSeason()}>X</Button>
                                             <iframe allow="fullscreen" class="block_video" title="trailer youtube" width="1000" height="600"
-                                                src="https://www.youtube.com/embed/{trailersSeasons[indexTrailersSelected].trailers[0].key}">
+                                                src="https://www.youtube.com/embed/{trailersSeasons[indexTrailersSelected].trailers[0].key}?{Date.now()}">
                                             </iframe>
                                         </div>
                                     {/if}
@@ -385,7 +383,7 @@
                             <div class="card_episode">
                                 <div class="title_image_episode">
                                     <p>{episode.episode_number} - {episode.name}</p>
-                                    <img src="https://image.tmdb.org/t/p/original{episode.still_path}" alt="poster episode">
+                                    <img src="https://image.tmdb.org/t/p/original{episode.still_path}?{Date.now()}" alt="poster episode">
                                 </div>
                                 <div>
                                     <i style="margin-left: 10px; font-family: 'Rye';">{episode.vote_average.toFixed(1)}/10 | {episode.runtime} min | diffusé le {(episode.air_date) ? moment(episode.air_date).format("LL") : "(aucune date)"}</i>
@@ -425,7 +423,7 @@
                         class="block_actor"
                         on:click={() => navigateToActorDetails(actor.id)}
                     >
-                        <img src="https://image.tmdb.org/t/p/original{actor.profile_path}" on:error={handleErrorActorImg} alt="{actor.name}" width="200px" height="200px" loading="lazy"/>
+                        <img src="https://image.tmdb.org/t/p/original{actor.profile_path}?{Date.now()}" on:error={handleErrorActorImg} alt="{actor.name}" width="200px" height="200px" loading="lazy"/>
                         <h3 class="actor_name">{actor.name}</h3>
                         <h4 class="actor_character">{actor.character}</h4>
                     </div>
@@ -451,7 +449,7 @@
                 {#each datas.videos as video}    
                     <div id="video_{video.id}">
                         <iframe allow="fullscreen" class="block_video" title="trailer youtube" width="600" height="400"
-                            src="https://www.youtube.com/embed/{video.key}">
+                            src="https://www.youtube.com/embed/{video.key}?{Date.now()}">
                         </iframe>
                     </div>
                 {/each}
@@ -475,7 +473,7 @@
             {#if datas.images && timeImages}
                 {#each datas.images.posters as image, i}    
                     <a id="image_{i}" class="block_image" href="https://image.tmdb.org/t/p/original{image.file_path}" target="_blank">
-                        <img src="https://image.tmdb.org/t/p/original{image.file_path}" alt="poster film" width="420" height="400" loading="lazy"/>    
+                        <img src="https://image.tmdb.org/t/p/original{image.file_path}?{Date.now()}" alt="poster film" width="420" height="400" loading="lazy"/>    
                     </a>
                 {/each}
             {:else}
@@ -503,7 +501,7 @@
                         title="{recommendation.title}"
                         on:click={() => fetchTvFromRecommendations(recommendation.id)}
                     >
-                        <img src="https://image.tmdb.org/t/p/w500{recommendation.poster_path}" alt="{recommendation.title} - Poster" width="420" height="400" loading="lazy" />    
+                        <img src="https://image.tmdb.org/t/p/w500{recommendation.poster_path}?{Date.now()}" alt="{recommendation.title} - Poster" width="420" height="400" loading="lazy" />    
                     </div>
                 {/each}   
             {:else}
