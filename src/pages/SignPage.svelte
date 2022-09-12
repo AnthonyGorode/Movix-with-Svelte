@@ -69,6 +69,8 @@
 
                 navigate("/search", {replace: true});
             } catch (error) {
+                errorMessage = error.message;
+                setTimeout(() => errorMessage = null, 9000);
                 console.error(error);
             }
         } else {
