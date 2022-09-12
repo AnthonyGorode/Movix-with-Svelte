@@ -439,6 +439,9 @@
         #container-details {
             width: unset;
         }
+        #title-details {
+            width: 190px;
+        }
     }
     @media (max-width: 600px) {
         #container-details {
